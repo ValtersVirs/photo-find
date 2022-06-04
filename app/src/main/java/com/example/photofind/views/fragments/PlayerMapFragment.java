@@ -6,11 +6,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,8 +25,6 @@ import com.bumptech.glide.request.target.Target;
 import com.example.photofind.R;
 import com.example.photofind.models.Checkpoint;
 import com.example.photofind.viewmodels.PlayerGameViewModel;
-import com.example.photofind.views.activities.PlayerGameActivity;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -37,17 +32,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 
 public class PlayerMapFragment extends Fragment {
 
-    PlayerGameViewModel model;
-    SharedPreferences sharedPref;
-    String playerId;
-    Marker marker;
-    ArrayList<Marker> markerList;
+    private String playerId;
+    private Marker marker;
+    private ArrayList<Marker> markerList;
+
+    private PlayerGameViewModel model;
+    private SharedPreferences sharedPref;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override

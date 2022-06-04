@@ -35,10 +35,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class OrganizerMapFragment extends Fragment {
 
-    OrganizerGameViewModel model;
-    SharedPreferences sharedPref;
-    String gameId;
-    Marker marker;
+    private String gameId;
+    private Marker marker;
+
+    private OrganizerGameViewModel model;
+    private SharedPreferences sharedPref;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override

@@ -20,15 +20,15 @@ import java.util.ArrayList;
 
 public class GameEndActivity extends AppCompatActivity {
 
-    String gameId;
-    ArrayList<PlayerRanking> playerRanking;
+    private String gameId;
+    private ArrayList<PlayerRanking> playerRanking;
 
-    Button btnReturn;
-    RecyclerView rvPlayerRanking;
+    private Button btnReturn;
+    private RecyclerView rvPlayerRanking;
 
-    GameEndViewModel model;
-    SharedPreferences sharedPref;
-    PlayerRankingAdapter rankingAdapter;
+    private GameEndViewModel model;
+    private SharedPreferences sharedPref;
+    private PlayerRankingAdapter rankingAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -14,35 +14,32 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.photofind.models.Player;
 import com.example.photofind.adapters.PlayerAdapter;
 import com.example.photofind.R;
 import com.example.photofind.viewmodels.PlayerLobbyViewModel;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 public class PlayerLobbyActivity extends AppCompatActivity {
 
-    TextView txtGameName;
-    TextView txtGameCode;
-    RelativeLayout rlContent;
-    ProgressBar progressBarGame;
+    private String gameId;
+    private String playerId;
+    private Button btnLeave;
+    private ArrayList<Player> playerList;
 
-    String gameId;
-    String playerId;
-    Button btnLeave;
-    ArrayList<Player> playerList;
+    private TextView txtGameName;
+    private TextView txtGameCode;
+    private RelativeLayout rlContent;
+    private ProgressBar progressBarGame;
 
-    SharedPreferences sharedPref;
-    RecyclerView rvPlayerList;
-    PlayerAdapter playerAdapter;
-    PlayerLobbyViewModel model;
-    MaterialAlertDialogBuilder dialogConfirm;
+    private SharedPreferences sharedPref;
+    private RecyclerView rvPlayerList;
+    private PlayerAdapter playerAdapter;
+    private PlayerLobbyViewModel model;
+    private MaterialAlertDialogBuilder dialogConfirm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

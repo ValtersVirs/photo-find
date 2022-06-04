@@ -33,22 +33,21 @@ import java.util.ArrayList;
 
 public class CreateGameActivity extends AppCompatActivity {
 
-    Button btnCreateNewGame;
-    Button btnAddCheckpoint;
-    EditText edtTxtInput;
-    ImageView imgPicture;
-    RelativeLayout rlContent;
-    RelativeLayout rlCreatingGame;
-    RecyclerView rvImages;
+    private Button btnCreateNewGame;
+    private Button btnAddCheckpoint;
+    private EditText edtTxtInput;
+    private RelativeLayout rlContent;
+    private RelativeLayout rlCreatingGame;
+    private RecyclerView rvImages;
 
-    ArrayList<TempCheckpoint> checkpointList;
-    SwitchMaterial optionStarted;
+    private ArrayList<TempCheckpoint> checkpointList;
+    private SwitchMaterial optionStarted;
 
-    SharedPreferences sharedPref;
-    CreateGameViewModel model;
-    OrganizerImageAdapter imageAdapter;
-    MaterialAlertDialogBuilder dialogError;
-    MaterialAlertDialogBuilder dialogConfirm;
+    private SharedPreferences sharedPref;
+    private CreateGameViewModel model;
+    private OrganizerImageAdapter imageAdapter;
+    private MaterialAlertDialogBuilder dialogError;
+    private MaterialAlertDialogBuilder dialogConfirm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +59,6 @@ public class CreateGameActivity extends AppCompatActivity {
         btnCreateNewGame = findViewById(R.id.btnCreateNewGame);
         btnAddCheckpoint = findViewById(R.id.btnAddCheckpoint);
         edtTxtInput = findViewById(R.id.edtTxtInput);
-        imgPicture = findViewById(R.id.imgPicture);
         rlContent = findViewById(R.id.rlContent);
         rlCreatingGame = findViewById(R.id.rlCreatingGame);
 

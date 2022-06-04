@@ -15,29 +15,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.photofind.R;
-import com.example.photofind.adapters.PlayerOrganizerGameAdapter;
 import com.example.photofind.adapters.PlayerOrganizerNewestAdapter;
-import com.example.photofind.models.Checkpoint;
-import com.example.photofind.models.Player;
 import com.example.photofind.models.PlayerCheckpoint;
 import com.example.photofind.viewmodels.OrganizerNewestViewModel;
-import com.example.photofind.viewmodels.OrganizerPlayerViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 public class OrganizerNewestListFragment extends Fragment {
 
-    ArrayList<PlayerCheckpoint> checkpointList;
-    String gameId;
+    private ArrayList<PlayerCheckpoint> checkpointList;
+    private String gameId;
 
-    RecyclerView rvCheckpointList;
+    private RecyclerView rvCheckpointList;
 
-    PlayerOrganizerNewestAdapter checkpointAdapter;
-    SharedPreferences sharedPref;
-    OrganizerNewestViewModel model;
-    FragmentManager manager;
+    private PlayerOrganizerNewestAdapter checkpointAdapter;
+    private SharedPreferences sharedPref;
+    private OrganizerNewestViewModel model;
+    private FragmentManager manager;
 
     public OrganizerNewestListFragment() {}
 

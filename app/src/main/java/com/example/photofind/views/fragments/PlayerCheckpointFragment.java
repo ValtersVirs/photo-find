@@ -24,14 +24,14 @@ import java.util.ArrayList;
 
 public class PlayerCheckpointFragment extends Fragment {
 
-    String gameId;
-    ArrayList<Checkpoint> checkpointList;
+    private String gameId;
+    private ArrayList<Checkpoint> checkpointList;
 
-    RecyclerView rvCheckpointList;
+    private RecyclerView rvCheckpointList;
 
-    PlayerCheckpointAdapter checkpointAdapter;
-    PlayerGameViewModel model;
-    SharedPreferences sharedPref;
+    private PlayerCheckpointAdapter checkpointAdapter;
+    private PlayerGameViewModel model;
+    private SharedPreferences sharedPref;
 
     public PlayerCheckpointFragment() {}
 

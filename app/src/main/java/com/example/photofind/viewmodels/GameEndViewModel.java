@@ -41,8 +41,6 @@ public class GameEndViewModel extends ViewModel {
                     for (DataSnapshot playerId : snapshot.getChildren()) {
                         playerIds.add(playerId.getKey());
                     }
-                } else {
-                    // update empty player ranking (?) (maybe return);
                 }
                 playerCount = playerIds.size();
                 tempPlayers = new ArrayList<>();

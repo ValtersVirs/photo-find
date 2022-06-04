@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.example.photofind.R;
 import com.example.photofind.viewmodels.OrganizerGameViewModel;
-import com.example.photofind.viewmodels.OrganizerPlayerViewModel;
 import com.example.photofind.views.fragments.OrganizerMapFragment;
 import com.example.photofind.views.fragments.OrganizerNewestListFragment;
 import com.example.photofind.views.fragments.OrganizerPlayerListFragment;
@@ -24,18 +23,17 @@ import com.google.android.material.tabs.TabLayout;
 
 public class OrganizerGameActivity extends AppCompatActivity {
 
-    String gameId;
-    int x = 0;
+    private String gameId;
 
-    TextView txtGameCode;
-    Button btnEndGame;
-    TabLayout tabLayout;
+    private TextView txtGameCode;
+    private Button btnEndGame;
+    private TabLayout tabLayout;
 
-    OrganizerGameViewModel model;
-    FragmentManager manager;
-    FragmentTransaction transaction;
-    SharedPreferences sharedPref;
-    MaterialAlertDialogBuilder dialogConfirm;
+    private OrganizerGameViewModel model;
+    private FragmentManager manager;
+    private FragmentTransaction transaction;
+    private SharedPreferences sharedPref;
+    private MaterialAlertDialogBuilder dialogConfirm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +57,7 @@ public class OrganizerGameActivity extends AppCompatActivity {
 
         model.getGame(gameId).observe(this, game -> {
             if (game != null) {
-                txtGameCode.setText("Code: " + game.getCode());
+                txtGameCode.setText(getResources().getString(R.string.code, game.getCode()));
             }
         });
 

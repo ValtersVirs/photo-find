@@ -29,4 +29,5 @@
     <string name="checkpoint">Checkpoint</string>
     <string name="time_ago">Time ago</string>
     <string name="view">View</string>
+    <string name="code">Code: %1$s</string>
 </resources>

@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.example.photofind.R;
 import com.example.photofind.viewmodels.MainViewModel;
@@ -24,16 +23,16 @@ public class MainActivity extends AppCompatActivity {
 
     private final int REQUEST_LOCATION_PERMISSION = 1;
 
-    String gameId;
-    String playerId;
+    private String gameId;
+    private String playerId;
 
-    Button btnCreateGame;
-    Button btnJoinGame;
-    RelativeLayout rlButtons;
-    ProgressBar pbLoadGame;
+    private Button btnCreateGame;
+    private Button btnJoinGame;
+    private RelativeLayout rlButtons;
+    private ProgressBar pbLoadGame;
 
-    SharedPreferences sharedPref;
-    MainViewModel model;
+    private SharedPreferences sharedPref;
+    private MainViewModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -36,11 +35,11 @@ import java.util.ArrayList;
 
 public class OrganizerPlayerMapFragment extends Fragment {
 
-    String playerId;
-    Marker marker;
-    ArrayList<Marker> markerList;
+    private String playerId;
+    private Marker marker;
+    private ArrayList<Marker> markerList;
 
-    OrganizerPlayerViewModel model;
+    private OrganizerPlayerViewModel model;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override

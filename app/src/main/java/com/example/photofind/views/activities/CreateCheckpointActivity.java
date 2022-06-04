@@ -28,7 +28,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -39,17 +38,19 @@ public class CreateCheckpointActivity extends AppCompatActivity {
 
     private final int REQUEST_EXTERNAL_STORAGE_PERMISSION = 1;
 
-    private Uri pictureUri;
     private String currentPhotoPath;
+    private Uri pictureUri;
+    private LatLng latLng;
+
     private Button btnSetCoordinates;
     private Button btnAddPicture;
     private Button btnSelectImage;
+    private Button btnSave;
+    private Button btnBack;
     private EditText edtCoordinates;
     private EditText edtTitle;
     private ImageView picture;
-    private Button btnSave;
-    private Button btnBack;
-    private LatLng latLng;
+
     private CreateCheckpointViewModel model;
     private MaterialAlertDialogBuilder dialogError;
 

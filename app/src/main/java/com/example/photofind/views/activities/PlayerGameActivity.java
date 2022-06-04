@@ -27,19 +27,19 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class PlayerGameActivity extends AppCompatActivity {
 
-    String playerId;
-    String gameId;
+    private String playerId;
+    private String gameId;
 
-    Button btnAddCheckpoint;
-    Button btnViewCheckpoints;
-    Button btnLeave;
-    Button btnBack;
+    private  Button btnAddCheckpoint;
+    private  Button btnViewCheckpoints;
+    private   Button btnLeave;
+    private   Button btnBack;
 
-    PlayerGameViewModel model;
-    SharedPreferences sharedPref;
-    FragmentManager manager;
-    FragmentTransaction transaction;
-    MaterialAlertDialogBuilder dialogConfirm;
+    private    PlayerGameViewModel model;
+    private    SharedPreferences sharedPref;
+    private    FragmentManager manager;
+    private    FragmentTransaction transaction;
+    private    MaterialAlertDialogBuilder dialogConfirm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

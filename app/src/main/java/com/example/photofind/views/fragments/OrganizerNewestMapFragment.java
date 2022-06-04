@@ -23,7 +23,6 @@ import com.bumptech.glide.request.target.Target;
 import com.example.photofind.R;
 import com.example.photofind.models.Checkpoint;
 import com.example.photofind.viewmodels.OrganizerNewestViewModel;
-import com.example.photofind.viewmodels.OrganizerPlayerViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,10 +35,10 @@ import java.util.Date;
 
 public class OrganizerNewestMapFragment extends Fragment {
 
-    String checkpointId;
-    Marker marker;
+    private String checkpointId;
+    private Marker marker;
 
-    OrganizerNewestViewModel model;
+    private OrganizerNewestViewModel model;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override
@@ -112,7 +111,5 @@ public class OrganizerNewestMapFragment extends Fragment {
         model = new ViewModelProvider(requireActivity()).get(OrganizerNewestViewModel.class);
 
         checkpointId = getArguments().getString("checkpointId");
-        Date date = new Date();
-        String a = "a";
     }
 }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,10 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.example.photofind.R;
-import com.example.photofind.adapters.PlayerAdapter;
 import com.example.photofind.adapters.PlayerOrganizerGameAdapter;
 import com.example.photofind.models.Player;
 import com.example.photofind.viewmodels.OrganizerPlayerViewModel;
@@ -26,15 +23,15 @@ import java.util.ArrayList;
 
 public class OrganizerPlayerListFragment extends Fragment {
 
-    ArrayList<Player> playerList;
-    String gameId;
+    private ArrayList<Player> playerList;
+    private String gameId;
 
-    RecyclerView rvPlayerList;
+    private RecyclerView rvPlayerList;
 
-    PlayerOrganizerGameAdapter playerAdapter;
-    SharedPreferences sharedPref;
-    OrganizerPlayerViewModel model;
-    FragmentManager manager;
+    private PlayerOrganizerGameAdapter playerAdapter;
+    private SharedPreferences sharedPref;
+    private OrganizerPlayerViewModel model;
+    private FragmentManager manager;
 
     public OrganizerPlayerListFragment() {}
 

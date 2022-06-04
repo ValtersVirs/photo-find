@@ -24,24 +24,21 @@ import java.util.Locale;
 
 public class JoinGameActivity extends AppCompatActivity {
 
-    String playerName;
-    String gameCode;
+    private String playerName;
+    private String gameCode;
 
-    Button btnJoinGame;
-    EditText edtGameCode;
-    EditText edtPlayerName;
+    private Button btnJoinGame;
+    private EditText edtGameCode;
+    private EditText edtPlayerName;
 
-    DatabaseReference databaseRef;
-    SharedPreferences sharedPref;
-    JoinGameViewModel model;
-    MaterialAlertDialogBuilder dialogError;
+    private SharedPreferences sharedPref;
+    private JoinGameViewModel model;
+    private MaterialAlertDialogBuilder dialogError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_game);
-
-        databaseRef = FirebaseDatabase.getInstance().getReference();
 
         btnJoinGame = findViewById(R.id.btnJoinGame);
         edtGameCode = findViewById(R.id.edtGameCode);

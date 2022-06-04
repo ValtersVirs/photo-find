@@ -14,33 +14,29 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.photofind.R;
 import com.example.photofind.adapters.PlayerOrganizerAdapter;
 import com.example.photofind.models.Player;
 import com.example.photofind.viewmodels.OrganizerLobbyViewModel;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 public class OrganizerLobbyActivity extends AppCompatActivity {
 
-    String gameId;
-    ArrayList<Player> playerList;
+    private String gameId;
+    private ArrayList<Player> playerList;
 
-    TextView txtGameName;
-    TextView txtGameCode;
-    Button btnStartGame;
-    RecyclerView rvPlayerList;
-    RelativeLayout rlContent;
-    ProgressBar progressBarGame;
+    private TextView txtGameName;
+    private TextView txtGameCode;
+    private Button btnStartGame;
+    private RecyclerView rvPlayerList;
+    private RelativeLayout rlContent;
+    private ProgressBar progressBarGame;
 
-    SharedPreferences sharedPref;
-    PlayerOrganizerAdapter playerAdapter;
-    DatabaseReference databaseRef;
-    OrganizerLobbyViewModel model;
+    private SharedPreferences sharedPref;
+    private PlayerOrganizerAdapter playerAdapter;
+    private OrganizerLobbyViewModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +44,6 @@ public class OrganizerLobbyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_organizer_lobby);
 
         sharedPref = getApplicationContext().getSharedPreferences("CurrentGame", Context.MODE_PRIVATE);
-        databaseRef = FirebaseDatabase.getInstance().getReference("players");
         model = new ViewModelProvider(this).get(OrganizerLobbyViewModel.class);
 
         rlContent = findViewById(R.id.rlContent);
