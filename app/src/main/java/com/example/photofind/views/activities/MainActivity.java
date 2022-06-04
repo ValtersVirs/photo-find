@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.photofind.R;
 import com.example.photofind.viewmodels.MainViewModel;
@@ -37,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Toast.makeText(this, "Git test 1", Toast.LENGTH_SHORT).show();
+
         setContentView(R.layout.activity_main);
 
         requestLocationPermission();
