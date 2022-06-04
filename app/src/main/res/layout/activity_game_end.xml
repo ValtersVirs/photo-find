@@ -19,7 +19,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
             android:textSize="30sp"
-            android:text="Game has ended"/>
+            android:text="@string/game_has_ended"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPlayerRanking"
@@ -38,6 +38,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_margin="20dp"
-        android:text="Menu"/>
+        android:text="@string/menu"/>
 
   </RelativeLayout>

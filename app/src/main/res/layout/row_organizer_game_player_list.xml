@@ -8,20 +8,21 @@
         android:id="@+id/txtPlayerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/btnViewCheckpoints"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:textSize="16sp"
-        android:text="Player"/>
+        android:text="@string/player"/>
 
     <Button
         android:id="@+id/btnViewCheckpoints"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp"
         style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:text="View"/>
+        android:text="@string/view"/>
 
 </RelativeLayout>

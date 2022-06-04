@@ -31,10 +31,10 @@
         android:id="@+id/txtCheckpointName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/rlImage"
-        android:layout_marginLeft="20dp"
+        android:layout_toEndOf="@+id/rlImage"
+        android:layout_marginStart="20dp"
         android:textSize="16sp"
-        android:text="Checkpoint"/>
+        android:text="@string/checkpoint"/>
 
 
 </RelativeLayout>

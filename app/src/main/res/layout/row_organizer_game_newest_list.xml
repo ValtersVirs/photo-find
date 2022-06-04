@@ -30,19 +30,19 @@
         android:id="@+id/txtPlayerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/rlImage"
-        android:layout_marginLeft="20dp"
+        android:layout_toEndOf="@+id/rlImage"
+        android:layout_marginStart="20dp"
         android:textSize="16sp"
-        android:text="Player"/>
+        android:text="@string/player"/>
 
     <TextView
         android:id="@+id/txtCheckpointName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/rlImage"
+        android:layout_toEndOf="@+id/rlImage"
         android:layout_below="@id/txtPlayerName"
-        android:layout_marginLeft="20dp"
-        android:text="Checkpoint"/>
+        android:layout_marginStart="20dp"
+        android:text="@string/checkpoint"/>
 
     <TextView
         android:id="@+id/txtTimeAgo"
@@ -50,6 +50,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignBottom="@id/rlImage"
-        android:text="Time ago" />
+        android:text="@string/time_ago" />
 
 </RelativeLayout>

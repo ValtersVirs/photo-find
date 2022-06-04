@@ -19,7 +19,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:ems="10"
-            android:hint="Your Name"
+            android:hint="@string/your_name"
             android:inputType="text" />
 
         <EditText
@@ -30,7 +30,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:ems="10"
-            android:hint="Game Code"
+            android:hint="@string/game_code"
             android:inputType="text" />
 
         <Button
@@ -40,7 +40,7 @@
             android:layout_below="@+id/edtGameCode"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
-            android:text="Join Game" />
+            android:text="@string/join_game" />
 
     </RelativeLayout>
 

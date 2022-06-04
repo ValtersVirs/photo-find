@@ -10,38 +10,38 @@
         android:id="@+id/btnLeave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_margin="10dp"
-        android:text="Leave"/>
+        android:text="@string/leave"/>
 
     <Button
         android:id="@+id/btnViewCheckpoints"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="10dp"
-        android:text="Checkpoints"/>
+        android:text="@string/checkpoints"/>
 
     <Button
         android:id="@+id/btnBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="10dp"
-        android:text="Back"
+        android:text="@string/back"
         android:visibility="gone"/>
 
     <Button
         android:id="@+id/btnAddCheckpoint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="10dp"
-        android:text="Add checkpoint"/>
+        android:text="@string/add_checkpoint"/>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainer"

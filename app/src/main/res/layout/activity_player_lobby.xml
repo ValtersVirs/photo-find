@@ -18,8 +18,8 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="100dp"
-            android:textSize="25dp"
-            android:text="Game Name" />
+            android:textSize="25sp"
+            android:text="@string/game_name" />
 
         <TextView
             android:id="@+id/txtGameCode"
@@ -28,8 +28,8 @@
             android:layout_below="@+id/txtGameName"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:textSize="20dp"
-            android:text="Game Code" />
+            android:textSize="20sp"
+            android:text="@string/game_code" />
 
         <TextView
             android:id="@+id/txtLobby"
@@ -38,7 +38,7 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/txtGameCode"
             android:layout_marginTop="20dp"
-            android:text="Wait for the game to start" />
+            android:text="@string/wait_for_the_game_to_start" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPlayerList"
@@ -55,7 +55,7 @@
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
             android:layout_margin="10dp"
-            android:text="Leave"/>
+            android:text="@string/leave"/>
 
     </RelativeLayout>
 

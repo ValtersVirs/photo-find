@@ -2,29 +2,30 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_centerHorizontal="true">
 
     <TextView
         android:id="@+id/txtPlayerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:text="Player"
-        android:textSize="16dp" />
+        android:text="@string/player"
+        android:textSize="16sp" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnRemovePlayer"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/txtPlayerName"
-        android:layout_marginLeft="10dp"
+        android:layout_toEndOf="@+id/txtPlayerName"
+        android:layout_marginStart="10dp"
         android:minWidth="0dp"
         android:minHeight="0dp"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:textAllCaps="true"
-        android:text="x" />
+        app:icon="@drawable/ic_close" />
 
 </RelativeLayout>
