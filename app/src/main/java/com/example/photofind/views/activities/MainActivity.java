@@ -38,9 +38,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Toast.makeText(this, "Git test 1", Toast.LENGTH_SHORT).show();
-
         setContentView(R.layout.activity_main);
 
         requestLocationPermission();
