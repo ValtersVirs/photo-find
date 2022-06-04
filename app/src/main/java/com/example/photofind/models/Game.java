@@ -8,25 +8,27 @@ public class Game {
     String code;
     Boolean started;
     Boolean ended;
+    Boolean joinAfterStart;
     HashMap<String, Boolean> players;
     HashMap<String, Boolean> checkpoints;
-    GameOptions options;
 
     public Game() {}
 
-    public Game(String name, Boolean started, GameOptions options) {
+
+
+    public Game(String name, Boolean started, Boolean joinAfterStart) {
         this.name = name;
         this.started = started;
-        this.options = options;
+        this.joinAfterStart = joinAfterStart;
     }
 
-    public Game(String id, String name, String code, Boolean started, Boolean ended, GameOptions options) {
+    public Game(String id, String name, String code, Boolean started, Boolean ended, Boolean joinAfterStart) {
         this.id = id;
         this.name = name;
         this.code = code;
         this.started = started;
         this.ended = ended;
-        this.options = options;
+        this.joinAfterStart = joinAfterStart;
     }
 
     public String getId() {
@@ -69,6 +71,14 @@ public class Game {
         this.ended = ended;
     }
 
+    public Boolean getJoinAfterStart() {
+        return joinAfterStart;
+    }
+
+    public void setJoinAfterStart(Boolean joinAfterStart) {
+        this.joinAfterStart = joinAfterStart;
+    }
+
     public HashMap<String, Boolean> getPlayers() {
         return players;
     }
@@ -77,19 +87,7 @@ public class Game {
         this.players = players;
     }
 
-    public HashMap<String, Boolean> getCheckpoints() {
-        return checkpoints;
-    }
+    public HashMap<String, Boolean> getCheckpoints() { return checkpoints; }
 
-    public void setCheckpoints(HashMap<String, Boolean> checkpoints) {
-        this.checkpoints = checkpoints;
-    }
-
-    public GameOptions getOptions() {
-        return options;
-    }
-
-    public void setOptions(GameOptions options) {
-        this.options = options;
-    }
+    public void setCheckpoints(HashMap<String, Boolean> checkpoints) { this.checkpoints = checkpoints; }
 }

@@ -9,12 +9,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.photofind.models.Checkpoint;
 import com.example.photofind.models.Game;
-import com.example.photofind.models.GameOptions;
 import com.example.photofind.models.TempCheckpoint;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,7 +38,7 @@ public class CreateGameViewModel extends ViewModel {
     private String gameCode;
     private String gameName;
     private ArrayList<TempCheckpoint> tempCheckpoints;
-    private GameOptions gameOptions;
+    private Boolean joinAfterStart;
     private Integer checkpointCount;
     private Integer checkpointsCompleted;
     private Integer imagesCompleted;
@@ -54,17 +50,17 @@ public class CreateGameViewModel extends ViewModel {
         return gameId;
     }
 
-    public void createGame(String gameName, ArrayList<TempCheckpoint> tempCheckpoints, GameOptions gameOptions) {
+    public void createGame(String gameName, ArrayList<TempCheckpoint> tempCheckpoints, Boolean joinAfterStart) {
         if (gameCode == null) {
             this.gameName = gameName;
             this.tempCheckpoints = tempCheckpoints;
-            this.gameOptions = gameOptions;
+            this.joinAfterStart = joinAfterStart;
 
             generateGameCode();
         } else {
             tempGameId = databaseRefGames.push().getKey();
 
-            Game newGame = new Game(tempGameId, gameName, gameCode, false, false, gameOptions);
+            Game newGame = new Game(tempGameId, gameName, gameCode, false, false, joinAfterStart);
 
             databaseRefGames.child(tempGameId).setValue(newGame).addOnSuccessListener(result -> {
                 checkpointCount = tempCheckpoints.size();
@@ -83,7 +79,7 @@ public class CreateGameViewModel extends ViewModel {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue() == null) {
                     gameCode = tempCode;
-                    createGame(gameName, tempCheckpoints, gameOptions);
+                    createGame(gameName, tempCheckpoints, joinAfterStart);
                 } else {
                     generateGameCode();
                 }

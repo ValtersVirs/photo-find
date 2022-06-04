@@ -5,8 +5,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,42 +15,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
-import android.widget.Toast;
 
 import com.example.photofind.R;
 import com.example.photofind.adapters.OrganizerImageAdapter;
-import com.example.photofind.models.Game;
-import com.example.photofind.models.GameOptions;
 import com.example.photofind.models.TempCheckpoint;
 import com.example.photofind.viewmodels.CreateGameViewModel;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.switchmaterial.SwitchMaterial;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class CreateGameActivity extends AppCompatActivity {
 
@@ -66,7 +43,6 @@ public class CreateGameActivity extends AppCompatActivity {
 
     ArrayList<TempCheckpoint> checkpointList;
     SwitchMaterial optionStarted;
-    AutoCompleteTextView optionWinner;
 
     SharedPreferences sharedPref;
     CreateGameViewModel model;
@@ -99,35 +75,10 @@ public class CreateGameActivity extends AppCompatActivity {
 
         optionStarted = findViewById(R.id.swOptionStarted);
 
-        String[] winnerOptions = {"none", "count", "time"};
-        ArrayAdapter winnerAdapter = new ArrayAdapter(CreateGameActivity.this, R.layout.row_winner_options, winnerOptions);
-        optionWinner = findViewById(R.id.acOptionsWinner);
-        optionWinner.setAdapter(winnerAdapter);
-        optionWinner.setText(winnerOptions[0], false);
-
-        NumberPicker minutes = findViewById(R.id.npMinutes);
-        minutes.setMinValue(0);
-        minutes.setMaxValue(60);
-        minutes.setFormatter(i -> String.format("%02d", i));
-
-        NumberPicker hours = findViewById(R.id.npHours);
-        hours.setMinValue(0);
-        hours.setMaxValue(24);
-        hours.setFormatter(i -> String.format("%02d", i));
-
-        NumberPicker days = findViewById(R.id.npDays);
-        days.setMinValue(0);
-        days.setMaxValue(99);
-        days.setFormatter(i -> String.format("%02d", i));
-
         btnCreateNewGame.setOnClickListener(view -> {
             String gameName = edtTxtInput.getText().toString().trim();
 
             Boolean joinAfterStart = optionStarted.isChecked();
-            String winnerBy = optionWinner.getText().toString();
-            int timeLimit = (minutes.getValue()) + (hours.getValue() * 60) + (days.getValue() * 1440);
-
-            GameOptions gameOptions = new GameOptions(joinAfterStart, winnerBy, timeLimit);
 
             if (gameName.isEmpty()) {
                 joinError("Enter a name for game");
@@ -136,7 +87,7 @@ public class CreateGameActivity extends AppCompatActivity {
             } else {
                 rlContent.setVisibility(View.GONE);
                 rlCreatingGame.setVisibility(View.VISIBLE);
-                model.createGame(gameName, checkpointList, gameOptions);
+                model.createGame(gameName, checkpointList, joinAfterStart);
             }
         });
 
