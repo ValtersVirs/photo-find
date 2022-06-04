@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.activities.CreateCheckpointActivity">
+
+    <fragment
+        android:id="@+id/frgMap"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentTop="true"
+        android:name="com.example.photofind.views.fragments.AddCheckpointMapFragment" />
+
+    <EditText
+        android:id="@+id/edtCoordinates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/frgMap"
+        android:layout_margin="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:hint="Coordinates: xx.xxxx..., yy.yyyy..." />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSetCoordinates"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/edtCoordinates"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:minWidth="0dp"
+        app:icon="@drawable/ic_check"
+        app:iconPadding="0dp" />
+
+    <EditText
+        android:id="@+id/edtCheckpointTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edtCoordinates"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:hint="Checkpoint Title" />
+
+    <RelativeLayout
+        android:id="@+id/rlButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/edtCheckpointTitle"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:id="@+id/txtUplaodImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textSize="18dp"
+            android:text="Upload an image"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAddPicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@+id/btnSelectImage"
+            android:minWidth="0dp"
+            app:icon="@drawable/ic_camera"
+            app:iconPadding="0dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSelectImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:minWidth="0dp"
+            app:icon="@drawable/ic_folder"
+            app:iconPadding="0dp" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imgPicture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rlNavButtons"
+        android:layout_below="@id/rlButtons"
+
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp" />
+
+    <RelativeLayout
+        android:id="@+id/rlNavButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="Back" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
+            android:text="Save" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

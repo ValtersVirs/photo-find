@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "549118003004",
+    "firebase_url": "https://photo-find-f7490-default-rtdb.firebaseio.com",
+    "project_id": "photo-find-f7490",
+    "storage_bucket": "photo-find-f7490.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:549118003004:android:e2e929b07d0144cd398039",
+        "android_client_info": {
+          "package_name": "com.example.photofind"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "549118003004-j2i2jihh23cq270knfhg5a2icotmd5ra.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6iw8CNXqn7qNEUmPSEMY9k-oPLCjB-7w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "549118003004-j2i2jihh23cq270knfhg5a2icotmd5ra.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
