@@ -6,30 +6,25 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.photofind.models.Checkpoint;
+import com.example.photofind.models.Database;
 import com.example.photofind.models.Game;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class OrganizerGameViewModel extends ViewModel {
-    final private DatabaseReference databaseRefGames = FirebaseDatabase.getInstance().getReference("games");
-    final private DatabaseReference databaseRefPlayers = FirebaseDatabase.getInstance().getReference("players");
-    final private DatabaseReference databaseRefCheckpoints = FirebaseDatabase.getInstance().getReference("checkpoints");
-    final private StorageReference storageRefCheckpoints = FirebaseStorage.getInstance().getReference("checkpoints");
-
+    private final Database database = new Database();
+    
     private MutableLiveData<ArrayList<Checkpoint>> checkpointList;
     private MutableLiveData<Game> game;
     private MutableLiveData<Boolean> ended;
 
-    private Long childrenNr;
+    private Long checkpointCount;
+    private Long checkpointNr;
 
     public LiveData<ArrayList<Checkpoint>> getCheckpoints(String gameId) {
         if (checkpointList == null) {
@@ -40,25 +35,25 @@ public class OrganizerGameViewModel extends ViewModel {
     }
 
     public void loadCheckpoints(String gameId) {
-        databaseRefGames.child(gameId + "/checkpoints").addListenerForSingleValueEvent(new ValueEventListener() {
+        database.getGames().child(gameId + "/checkpoints").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot result) {
                 ArrayList<Checkpoint> newCheckpointList = new ArrayList<>();
                 if (result.hasChildren()) {
-                    Long childrenCount = result.getChildrenCount();
-                    childrenNr = 0L;
+                    checkpointCount = result.getChildrenCount();
+                    checkpointNr = 0L;
                     for (DataSnapshot dataSnapshot: result.getChildren()) {
                         String checkpointId = dataSnapshot.getKey();
 
-                        databaseRefCheckpoints.child(checkpointId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        database.getCheckpoints().child(checkpointId).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.getValue() != null) {
                                     Checkpoint tempCheckpoint = snapshot.getValue(Checkpoint.class);
                                     newCheckpointList.add(tempCheckpoint);
                                 }
-                                childrenNr++;
-                                if (childrenCount == childrenNr) {
+                                checkpointNr++;
+                                if (checkpointCount == checkpointNr) {
                                     checkpointList.setValue(newCheckpointList);
                                 }
                             }
@@ -84,7 +79,7 @@ public class OrganizerGameViewModel extends ViewModel {
     public LiveData<Game> getGame(String gameId) {
         if (game == null) {
             game = new MutableLiveData<>();
-            databaseRefGames.child(gameId).addListenerForSingleValueEvent(new ValueEventListener() {
+            database.getGames().child(gameId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.getValue() != null) {
@@ -105,7 +100,7 @@ public class OrganizerGameViewModel extends ViewModel {
         if (ended == null) {
             ended = new MutableLiveData<>();
 
-            databaseRefGames.child(gameId + "/ended").addValueEventListener(new ValueEventListener() {
+            database.getGames().child(gameId + "/ended").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if ((Boolean) snapshot.getValue()) {
@@ -127,7 +122,7 @@ public class OrganizerGameViewModel extends ViewModel {
     public void endGame(String gameId) {
         Map<String, Object> update = new HashMap<>();
         update.put("/ended", true);
-        databaseRefGames.child(gameId).updateChildren(update);
+        database.getGames().child(gameId).updateChildren(update);
     }
 
 }

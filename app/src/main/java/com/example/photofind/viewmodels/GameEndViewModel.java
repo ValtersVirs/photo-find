@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class GameEndViewModel extends ViewModel {
-    private Database database = new Database();
+    private final Database database = new Database();
+
     private String gameId;
     private int playerCount;
 

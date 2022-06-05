@@ -7,13 +7,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.photofind.models.Checkpoint;
+import com.example.photofind.models.Database;
 import com.example.photofind.models.Player;
-import com.example.photofind.models.PlayerCheckpoint;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -21,9 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class OrganizerPlayerViewModel extends ViewModel {
-    final private DatabaseReference databaseRefGames = FirebaseDatabase.getInstance().getReference("games");
-    final private DatabaseReference databaseRefPlayers = FirebaseDatabase.getInstance().getReference("players");
-    final private DatabaseReference databaseRefCheckpoints = FirebaseDatabase.getInstance().getReference("checkpoints");
+    private final Database database = new Database();
 
     private MutableLiveData<ArrayList<Player>> playerList;
     private ArrayList<Player> newPlayerList;
@@ -49,7 +45,7 @@ public class OrganizerPlayerViewModel extends ViewModel {
     }
 
     public void loadPlayers() {
-        databaseRefGames.child(gameId + "/players").addValueEventListener(new ValueEventListener() {
+        database.getGames().child(gameId + "/players").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshots) {
                 newPlayerList = new ArrayList<>();
@@ -75,7 +71,7 @@ public class OrganizerPlayerViewModel extends ViewModel {
     }
 
     public void loadPlayer(String playerId) {
-        databaseRefPlayers.child(playerId).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.getPlayers().child(playerId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 newPlayerList.add(snapshot.getValue(Player.class));
@@ -94,9 +90,9 @@ public class OrganizerPlayerViewModel extends ViewModel {
 
     public LiveData<ArrayList<Checkpoint>> getCheckpoints(String playerId) {
         if (this.playerId != null && !playerId.equals(this.playerId)) {
-            databaseRefPlayers.child(this.playerId + "/checkpoints").removeEventListener(playerCheckpointListener);
+            database.getPlayers().child(this.playerId + "/checkpoints").removeEventListener(playerCheckpointListener);
             for (Map.Entry<String, ValueEventListener> checkpointListener : checkpointListeners.entrySet()) {
-                databaseRefCheckpoints.child(checkpointListener.getKey()).removeEventListener(checkpointListener.getValue());
+                database.getCheckpoints().child(checkpointListener.getKey()).removeEventListener(checkpointListener.getValue());
             }
             this.playerId = playerId;
             playerCheckpoints = new MutableLiveData<>();
@@ -139,7 +135,7 @@ public class OrganizerPlayerViewModel extends ViewModel {
             }
         };
 
-        databaseRefPlayers.child(playerId + "/checkpoints").addChildEventListener(playerCheckpointListener);
+        database.getPlayers().child(playerId + "/checkpoints").addChildEventListener(playerCheckpointListener);
     }
 
     public void addCheckpointListener(String checkpointId) {
@@ -171,7 +167,7 @@ public class OrganizerPlayerViewModel extends ViewModel {
 
         checkpointListeners.put(checkpointId, tempCheckpointListener);
 
-        databaseRefCheckpoints.child(checkpointId).addValueEventListener(tempCheckpointListener);
+        database.getCheckpoints().child(checkpointId).addValueEventListener(tempCheckpointListener);
     }
 
     public LiveData<Checkpoint> getUpdatedCheckpoint(String playerId) {
@@ -182,7 +178,7 @@ public class OrganizerPlayerViewModel extends ViewModel {
     }
 
     public void setUpdatedCheckpoint(String checkpointId) {
-        databaseRefCheckpoints.child(checkpointId).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.getCheckpoints().child(checkpointId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot != null) {

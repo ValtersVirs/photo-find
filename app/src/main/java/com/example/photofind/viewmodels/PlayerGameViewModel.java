@@ -1,6 +1,5 @@
 package com.example.photofind.viewmodels;
 
-import android.content.Intent;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
@@ -10,17 +9,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.photofind.models.Checkpoint;
-import com.example.photofind.models.Player;
+import com.example.photofind.models.Database;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,10 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerGameViewModel extends ViewModel {
-    final private DatabaseReference databaseRefGames = FirebaseDatabase.getInstance().getReference("games");
-    final private DatabaseReference databaseRefPlayers = FirebaseDatabase.getInstance().getReference("players");
-    final private DatabaseReference databaseRefCheckpoints = FirebaseDatabase.getInstance().getReference("checkpoints");
-    final private StorageReference storageRefCheckpoints = FirebaseStorage.getInstance().getReference("checkpoints");
+    private final Database database = new Database();
 
     private MutableLiveData<ArrayList<Checkpoint>> playerCheckpointList;
     private ArrayList<Checkpoint> newPlayerCheckpointList;
@@ -55,7 +46,7 @@ public class PlayerGameViewModel extends ViewModel {
     public void loadCheckpoints(String playerId) {
         newPlayerCheckpointList = new ArrayList<>();
 
-        databaseRefPlayers.child(playerId + "/checkpoints").addChildEventListener(new ChildEventListener() {
+        database.getPlayers().child(playerId + "/checkpoints").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 addCheckpointListener(snapshot.getKey());
@@ -84,7 +75,7 @@ public class PlayerGameViewModel extends ViewModel {
     }
 
     public void addCheckpointListener(String checkpointId) {
-        databaseRefCheckpoints.child(checkpointId).addValueEventListener(new ValueEventListener() {
+        database.getCheckpoints().child(checkpointId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
@@ -119,12 +110,10 @@ public class PlayerGameViewModel extends ViewModel {
     }
 
     public void setUpdatedCheckpoint(String checkpointId) {
-        databaseRefCheckpoints.child(checkpointId).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.getCheckpoints().child(checkpointId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot != null) {
-                    updatedCheckpoint.setValue(snapshot.getValue(Checkpoint.class));
-                }
+                updatedCheckpoint.setValue(snapshot.getValue(Checkpoint.class));
             }
 
             @Override
@@ -135,16 +124,16 @@ public class PlayerGameViewModel extends ViewModel {
     }
 
     public void addCheckpoint(Uri image, LatLng latLng, String playerId, String title) {
-        String checkpointId = databaseRefCheckpoints.push().getKey();
+        String checkpointId = database.getCheckpoints().push().getKey();
 
         Date date = new Date();
         Checkpoint checkpoint = new Checkpoint(checkpointId, "", title, latLng.latitude, latLng.longitude, date.getTime());
 
-        storageRefCheckpoints.child(checkpointId + ".jpg").putFile(image).addOnSuccessListener(taskSnapshot -> {
-            storageRefCheckpoints.child(checkpointId + ".jpg").getDownloadUrl().addOnSuccessListener(uri -> {
+        database.getCheckpointsStorage().child(checkpointId + ".jpg").putFile(image).addOnSuccessListener(taskSnapshot -> {
+            database.getCheckpointsStorage().child(checkpointId + ".jpg").getDownloadUrl().addOnSuccessListener(uri -> {
                 Map<String, Object> update = new HashMap<>();
                 update.put("/imagePath", uri.toString());
-                databaseRefCheckpoints.child(checkpointId).updateChildren(update);
+                database.getCheckpoints().child(checkpointId).updateChildren(update);
             });
         });
 
@@ -153,8 +142,8 @@ public class PlayerGameViewModel extends ViewModel {
 
     public void uploadCheckpoint(Checkpoint checkpoint, String playerId) {
         String checkpointId = checkpoint.getId();
-        databaseRefCheckpoints.child(checkpointId).setValue(checkpoint).addOnSuccessListener(o -> {
-            databaseRefPlayers.child(playerId + "/checkpoints/" + checkpointId).setValue(true);
+        database.getCheckpoints().child(checkpointId).setValue(checkpoint).addOnSuccessListener(o -> {
+            database.getPlayers().child(playerId + "/checkpoints/" + checkpointId).setValue(true);
         });
     }
 
@@ -168,7 +157,7 @@ public class PlayerGameViewModel extends ViewModel {
     }
 
     public void loadGameCheckpoints() {
-        databaseRefGames.child(this.gameId + "/checkpoints").addListenerForSingleValueEvent(new ValueEventListener() {
+        database.getGames().child(this.gameId + "/checkpoints").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshots) {
                 newGameCheckpointList = new ArrayList<>();
@@ -189,7 +178,7 @@ public class PlayerGameViewModel extends ViewModel {
     }
 
     public void addCheckpoint(String checkpointId) {
-        databaseRefCheckpoints.child(checkpointId).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.getCheckpoints().child(checkpointId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 newGameCheckpointList.add(snapshot.getValue(Checkpoint.class));
@@ -207,7 +196,7 @@ public class PlayerGameViewModel extends ViewModel {
         if (ended == null) {
             ended = new MutableLiveData<>();
 
-            databaseRefGames.child(gameId + "/ended").addValueEventListener(new ValueEventListener() {
+            database.getGames().child(gameId + "/ended").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if ((Boolean) snapshot.getValue()) {
@@ -227,15 +216,15 @@ public class PlayerGameViewModel extends ViewModel {
     }
 
     public void leaveGame(String gameId, String playerId) {
-        databaseRefPlayers.child(playerId).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.getPlayers().child(playerId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot playerSnapshot) {
-                databaseRefGames.child(gameId + "/players/" + playerId).removeValue();
+                database.getGames().child(gameId + "/players/" + playerId).removeValue();
                 for (DataSnapshot checkpointSnapshot : playerSnapshot.child("checkpoints").getChildren()) {
-                    databaseRefCheckpoints.child(checkpointSnapshot.getKey()).removeValue();
-                    storageRefCheckpoints.child(checkpointSnapshot.getKey() + ".jpg").delete();
+                    database.getCheckpoints().child(checkpointSnapshot.getKey()).removeValue();
+                    database.getCheckpointsStorage().child(checkpointSnapshot.getKey() + ".jpg").delete();
                 }
-                databaseRefPlayers.child(playerId).removeValue();
+                database.getPlayers().child(playerId).removeValue();
             }
 
             @Override

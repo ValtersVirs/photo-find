@@ -5,28 +5,23 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.photofind.models.Game;
+import com.example.photofind.models.Database;
 import com.example.photofind.models.Player;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
 public class JoinGameViewModel extends ViewModel {
-    private final DatabaseReference databaseRefGames = FirebaseDatabase.getInstance().getReference("games");
-    private final DatabaseReference databaseRefPlayers = FirebaseDatabase.getInstance().getReference("players");
+    private final Database database = new Database();
 
     private MutableLiveData<HashMap<String, String>> joinStatus;
 
     public void joinGame(String playerName, DataSnapshot game, String gameStatus)  {
         String gameId = (String) game.child("id").getValue();
-        String playerId = databaseRefPlayers.push().getKey();
+        String playerId = database.getPlayers().push().getKey();
         Player player = new Player(playerName, playerId);
 
         OnSuccessListener playerAdded = o -> {
@@ -37,12 +32,12 @@ public class JoinGameViewModel extends ViewModel {
             joinStatus.setValue(status);
         };
 
-        databaseRefPlayers.child(playerId).setValue(player).addOnSuccessListener(playerAdded);
-        databaseRefGames.child(gameId + "/players/" + playerId).setValue(true);
+        database.getPlayers().child(playerId).setValue(player).addOnSuccessListener(playerAdded);
+        database.getGames().child(gameId + "/players/" + playerId).setValue(true);
     }
 
     public void checkGameCode(String playerName, String code) {
-        databaseRefGames.orderByChild("code").equalTo(code).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.getGames().orderByChild("code").equalTo(code).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot result) {
                 if (result.getValue() != null && result.getChildrenCount() == 1) {
@@ -52,9 +47,9 @@ public class JoinGameViewModel extends ViewModel {
                             status.put("status", "game_ended");
                             joinStatus.setValue(status);
                         } else if (snapshot.hasChild("started")
-                                && snapshot.hasChild("options/joinAfterStart")
+                                && snapshot.hasChild("joinAfterStart")
                                 && (Boolean) snapshot.child("started").getValue()
-                                && (Boolean) snapshot.child("options/joinAfterStart").getValue() == false) {
+                                && !((Boolean) snapshot.child("joinAfterStart").getValue())) {
                             HashMap<String, String> status = new HashMap<>();
                             status.put("status", "game_started");
                             joinStatus.setValue(status);
@@ -78,7 +73,7 @@ public class JoinGameViewModel extends ViewModel {
         });
     }
 
-    public LiveData<HashMap<String, String>> getPlayerValues() {
+    public LiveData<HashMap<String, String>> getJoinStatus() {
         if (joinStatus == null) {
             joinStatus = new MutableLiveData<>();
         }

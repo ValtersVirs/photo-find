@@ -5,19 +5,17 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.photofind.models.Database;
 import com.example.photofind.models.Game;
 import com.example.photofind.models.Player;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 public class OrganizerLobbyViewModel extends ViewModel {
-    final private DatabaseReference databaseRefPlayers = FirebaseDatabase.getInstance().getReference("players");
-    final private DatabaseReference databaseRefGames = FirebaseDatabase.getInstance().getReference("games");
+    private final Database database = new Database();
 
     private MutableLiveData<ArrayList<Player>> playerList;
     private MutableLiveData<Boolean> isStarted;
@@ -32,7 +30,7 @@ public class OrganizerLobbyViewModel extends ViewModel {
     }
 
     public void loadGamePlayers(String gameId) {
-        databaseRefGames.child(gameId + "/players").addValueEventListener(new ValueEventListener() {
+        database.getGames().child(gameId + "/players").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot result) {
                 ArrayList<Player> newPlayerList = new ArrayList<>();
@@ -42,7 +40,7 @@ public class OrganizerLobbyViewModel extends ViewModel {
                         if (isActive) {
                             String playerId = dataSnapshot.getKey();
 
-                            databaseRefPlayers.child(playerId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            database.getPlayers().child(playerId).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (snapshot.getValue() != null) {
@@ -80,7 +78,7 @@ public class OrganizerLobbyViewModel extends ViewModel {
     }
 
     public void loadGameStarted(String gameId) {
-        databaseRefGames.child(gameId + "/started").addValueEventListener(new ValueEventListener() {
+        database.getGames().child(gameId + "/started").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if ((Boolean) snapshot.getValue()) {
@@ -98,7 +96,7 @@ public class OrganizerLobbyViewModel extends ViewModel {
     public LiveData<Game> getGame(String gameId) {
         if (game == null) {
             game = new MutableLiveData<>();
-            databaseRefGames.child(gameId).addListenerForSingleValueEvent(new ValueEventListener() {
+            database.getGames().child(gameId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.getValue() != null) {
@@ -116,6 +114,6 @@ public class OrganizerLobbyViewModel extends ViewModel {
     }
 
     public void startGame(String gameId) {
-        databaseRefGames.child(gameId + "/started").setValue(true);
+        database.getGames().child(gameId + "/started").setValue(true);
     }
 }

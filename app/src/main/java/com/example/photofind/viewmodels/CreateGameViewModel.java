@@ -8,18 +8,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.photofind.models.Checkpoint;
+import com.example.photofind.models.Database;
 import com.example.photofind.models.Game;
 import com.example.photofind.models.TempCheckpoint;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,10 +23,8 @@ import java.util.Map;
 import java.util.Random;
 
 public class CreateGameViewModel extends ViewModel {
-    private final DatabaseReference databaseRefGames = FirebaseDatabase.getInstance().getReference("games");
-    private final DatabaseReference databaseRefCheckpoints = FirebaseDatabase.getInstance().getReference("checkpoints");
-    private final StorageReference storageRefCheckpoints = FirebaseStorage.getInstance().getReference("checkpoints");
     private final String SYMBOLS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private final Database database = new Database();
 
     private MutableLiveData<String> gameId;
     private String tempGameId;
@@ -58,11 +51,11 @@ public class CreateGameViewModel extends ViewModel {
 
             generateGameCode();
         } else {
-            tempGameId = databaseRefGames.push().getKey();
+            tempGameId = database.getGames().push().getKey();
 
             Game newGame = new Game(tempGameId, gameName, gameCode, false, false, joinAfterStart);
 
-            databaseRefGames.child(tempGameId).setValue(newGame).addOnSuccessListener(result -> {
+            database.getGames().child(tempGameId).setValue(newGame).addOnSuccessListener(result -> {
                 checkpointCount = tempCheckpoints.size();
                 checkpointsCompleted = 0;
                 imagesCompleted = 0;
@@ -74,7 +67,7 @@ public class CreateGameViewModel extends ViewModel {
     public void generateGameCode() {
         String tempCode = getRandomString(6);
 
-        databaseRefGames.orderByChild("code").equalTo(tempCode).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.getGames().orderByChild("code").equalTo(tempCode).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue() == null) {
@@ -108,7 +101,7 @@ public class CreateGameViewModel extends ViewModel {
             LatLng latLng = tempCheckpoint.getLatLng();
             String title = tempCheckpoint.getTitle();
 
-            String checkpointId = databaseRefCheckpoints.push().getKey();
+            String checkpointId = database.getCheckpoints().push().getKey();
             Date date = new Date();
             Checkpoint checkpoint = new Checkpoint(checkpointId, "", title, latLng.latitude, latLng.longitude, date.getTime());
 
@@ -118,13 +111,13 @@ public class CreateGameViewModel extends ViewModel {
     }
 
     public void uploadImage(String checkpointId, Uri imageUri) {
-        storageRefCheckpoints.child(checkpointId + ".jpg").putFile(imageUri).addOnCompleteListener(imageUpload -> {
+        database.getCheckpointsStorage().child(checkpointId + ".jpg").putFile(imageUri).addOnCompleteListener(imageUpload -> {
             if (imageUpload.isSuccessful()) {
-                storageRefCheckpoints.child(checkpointId + ".jpg").getDownloadUrl().addOnCompleteListener(imageUrl -> {
+                database.getCheckpointsStorage().child(checkpointId + ".jpg").getDownloadUrl().addOnCompleteListener(imageUrl -> {
                     if (imageUrl.isSuccessful()) {
                         Map<String, Object> update = new HashMap<>();
                         update.put("/imagePath", imageUrl.getResult().toString());
-                        databaseRefCheckpoints.child(checkpointId).updateChildren(update).addOnCompleteListener(o -> {
+                        database.getCheckpoints().child(checkpointId).updateChildren(update).addOnCompleteListener(o -> {
                             imagesCompleted++;
                             gameUploadCompleted();
                         });
@@ -141,9 +134,9 @@ public class CreateGameViewModel extends ViewModel {
     public void uploadCheckpoint(Checkpoint checkpoint) {
         String checkpointId = checkpoint.getId();
 
-        databaseRefCheckpoints.child(checkpointId).setValue(checkpoint).addOnCompleteListener(task -> {
+        database.getCheckpoints().child(checkpointId).setValue(checkpoint).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                databaseRefGames.child(tempGameId + "/checkpoints/" + checkpointId).setValue(true).addOnCompleteListener(o -> {
+                database.getGames().child(tempGameId + "/checkpoints/" + checkpointId).setValue(true).addOnCompleteListener(o -> {
                     checkpointsCompleted++;
                     gameUploadCompleted();
                 });

@@ -1,13 +1,9 @@
 package com.example.photofind.models;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.HashMap;
 
 public class Player {
-    final private DatabaseReference databaseRefPlayers = FirebaseDatabase.getInstance().getReference("players");
-    final private DatabaseReference databaseRefGames = FirebaseDatabase.getInstance().getReference("games");
+    private final Database database = new Database();
 
     String id;
     String name;
@@ -34,7 +30,7 @@ public class Player {
     }
 
     public void removeFromGame(String gameId) {
-        databaseRefGames.child(gameId + "/players/" + this.getId()).removeValue();
-        databaseRefPlayers.child(this.getId()).removeValue();
+        database.getGames().child(gameId + "/players/" + this.getId()).removeValue();
+        database.getPlayers().child(this.getId()).removeValue();
     }
 }

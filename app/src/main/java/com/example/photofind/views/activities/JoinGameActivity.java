@@ -8,19 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.photofind.R;
 import com.example.photofind.viewmodels.JoinGameViewModel;
-import com.example.photofind.views.activities.PlayerLobbyActivity;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
-import java.util.Locale;
 
 public class JoinGameActivity extends AppCompatActivity {
 
@@ -56,7 +49,7 @@ public class JoinGameActivity extends AppCompatActivity {
         });
 
         // Listen for when player is added to game and start view PlayerLobbyActivity
-        model.getPlayerValues().observe(this, result -> {
+        model.getJoinStatus().observe(this, result -> {
             switch (result.get("status")) {
                 case "join_lobby":
                     joinGameLobby(result.get("gameId"), result.get("playerId"));

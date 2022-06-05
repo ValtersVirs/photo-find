@@ -6,22 +6,18 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.photofind.models.Database;
 import com.example.photofind.models.Game;
 import com.example.photofind.models.Player;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 public class PlayerLobbyViewModel extends ViewModel {
-    final private DatabaseReference databaseRefPlayers = FirebaseDatabase.getInstance().getReference("players");
-    final private DatabaseReference databaseRefGames = FirebaseDatabase.getInstance().getReference("games");
+    private final Database database = new Database();
 
     private MutableLiveData<ArrayList<Player>> playerList;
     private MutableLiveData<Boolean> isStarted;
@@ -37,7 +33,7 @@ public class PlayerLobbyViewModel extends ViewModel {
     }
 
     public void loadGamePlayers(String gameId) {
-        databaseRefGames.child(gameId + "/players").addValueEventListener(new ValueEventListener() {
+        database.getGames().child(gameId + "/players").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot result) {
                 ArrayList<Player> newPlayerList = new ArrayList<>();
@@ -47,7 +43,7 @@ public class PlayerLobbyViewModel extends ViewModel {
                         if (isActive) {
                             String playerId = dataSnapshot.getKey();
 
-                            databaseRefPlayers.child(playerId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            database.getPlayers().child(playerId).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (snapshot.getValue() != null) {
@@ -80,7 +76,7 @@ public class PlayerLobbyViewModel extends ViewModel {
         if (isStarted == null) {
             isStarted = new MutableLiveData<>();
             isStarted.setValue(false);
-            databaseRefGames.child(gameId + "/started").addValueEventListener(new ValueEventListener() {
+            database.getGames().child(gameId + "/started").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Boolean isGameStarted = (Boolean) snapshot.getValue();
@@ -102,7 +98,7 @@ public class PlayerLobbyViewModel extends ViewModel {
         if (removedFromGame == null) {
             removedFromGame = new MutableLiveData<>();
 
-            databaseRefGames.child(gameId + "/players").addChildEventListener(new ChildEventListener() {
+            database.getGames().child(gameId + "/players").addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
@@ -138,7 +134,7 @@ public class PlayerLobbyViewModel extends ViewModel {
         if (game == null) {
             game = new MutableLiveData<>();
 
-            databaseRefGames.child(gameId).addListenerForSingleValueEvent(new ValueEventListener() {
+            database.getGames().child(gameId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.getValue() != null) {
@@ -156,7 +152,7 @@ public class PlayerLobbyViewModel extends ViewModel {
     }
 
     public void leaveGame(String gameId, String playerId) {
-        databaseRefGames.child(gameId + "/players/" + playerId).removeValue();
-        databaseRefPlayers.child(playerId).removeValue();
+        database.getGames().child(gameId + "/players/" + playerId).removeValue();
+        database.getPlayers().child(playerId).removeValue();
     }
 }
