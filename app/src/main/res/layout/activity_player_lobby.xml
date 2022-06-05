@@ -28,8 +28,8 @@
             android:layout_below="@+id/txtGameName"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:textSize="20sp"
-            android:text="@string/game_code" />
+            android:text="@string/game_code"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/txtLobby"
@@ -52,10 +52,13 @@
             android:id="@+id/btnLeave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
-            android:layout_margin="10dp"
-            android:text="@string/leave"/>
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/leave" />
 
     </RelativeLayout>
 

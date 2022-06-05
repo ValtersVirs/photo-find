@@ -92,6 +92,7 @@ public class PlayerLobbyActivity extends AppCompatActivity {
             if (game != null) {
                 txtGameName.setText(game.getName());
                 txtGameCode.setText(game.getCode());
+
                 progressBarGame.setVisibility(View.GONE);
                 rlContent.setVisibility(View.VISIBLE);
             }

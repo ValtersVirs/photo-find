@@ -8,9 +8,9 @@
     tools:context=".views.activities.GameEndActivity">
 
     <RelativeLayout
+        android:id="@+id/rlContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/btnReturn">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/txtGameEnded"
@@ -21,23 +21,39 @@
             android:textSize="30sp"
             android:text="@string/game_has_ended"/>
 
+        <TextView
+            android:id="@+id/txtGameName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtGameEnded"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="@string/game_name"
+            android:textSize="20sp" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPlayerRanking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/txtGameEnded"
+            android:layout_below="@id/txtGameName"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="70dp" />
 
+        <Button
+            android:id="@+id/btnReturn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="20dp"
+            android:text="@string/menu"/>
+
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/btnReturn"
+    <ProgressBar
+        android:id="@+id/pbLoading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
-        android:text="@string/menu"/>
+        android:layout_centerInParent="true" />
 
   </RelativeLayout>

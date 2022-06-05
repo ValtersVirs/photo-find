@@ -8,5 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="beige">#E9DAC4</color>
+    <color name="puce">#39221F</color>
+    <color name="puce_70">#B339221F</color>
+    <color name="orange">#EF813E</color>
+    <color name="orange_dark">#B14B0E</color>
     <color name="olive_green">#5E6826</color>
 </resources>

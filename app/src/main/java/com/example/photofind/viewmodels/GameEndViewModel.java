@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.photofind.models.Game;
 import com.example.photofind.models.PlayerRanking;
 import com.example.photofind.models.Database;
 import com.example.photofind.models.Player;
@@ -23,14 +24,39 @@ public class GameEndViewModel extends ViewModel {
 
     private ArrayList<PlayerRanking> tempPlayers;
     private MutableLiveData<ArrayList<PlayerRanking>> playerRanking;
+    private MutableLiveData<Game> game;
 
     public LiveData<ArrayList<PlayerRanking>> getPlayerRanking(String gameId) {
         if (playerRanking == null) {
             playerRanking = new MutableLiveData<>();
             this.gameId = gameId;
+            loadGame();
             loadGamePlayerIds();
         }
         return playerRanking;
+    }
+
+    public LiveData<Game> getGameName() {
+        if (game == null) {
+            game = new MutableLiveData<>();
+        }
+        return game;
+    }
+
+    public void loadGame() {
+        database.getGames().child(gameId + "/name").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue() != null) {
+                    game.setValue(snapshot.getValue(Game.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public void loadGamePlayerIds() {
