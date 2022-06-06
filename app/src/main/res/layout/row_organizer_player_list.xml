@@ -26,6 +26,7 @@
         android:minHeight="0dp"
         android:textSize="20sp"
         android:textAllCaps="true"
-        app:icon="@drawable/ic_close" />
+        app:icon="@drawable/ic_close"
+        app:iconPadding="0dp"/>
 
 </RelativeLayout>

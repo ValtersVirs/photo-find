@@ -44,12 +44,10 @@ public class GameEndViewModel extends ViewModel {
     }
 
     public void loadGame() {
-        database.getGames().child(gameId + "/name").addListenerForSingleValueEvent(new ValueEventListener() {
+        database.getGames().child(gameId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.getValue() != null) {
-                    game.setValue(snapshot.getValue(Game.class));
-                }
+                game.setValue(snapshot.getValue(Game.class));
             }
 
             @Override

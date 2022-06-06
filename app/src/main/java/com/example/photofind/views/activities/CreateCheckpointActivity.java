@@ -19,6 +19,7 @@ import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.photofind.R;
@@ -183,6 +184,7 @@ public class CreateCheckpointActivity extends AppCompatActivity {
     }
 
     public void pickImage() {
+        /*
         Intent fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
         fileIntent.setType("image/*");
 
@@ -191,8 +193,13 @@ public class CreateCheckpointActivity extends AppCompatActivity {
 
         Intent chooserIntent = Intent.createChooser(albumIntent, "Select Image");
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {fileIntent});
-
         selectPictureLauncher.launch(chooserIntent);
+        */
+
+        Intent albumIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        albumIntent.setType("image/*");
+
+        selectPictureLauncher.launch(albumIntent);
     }
 
     public File createImageFile() throws IOException {

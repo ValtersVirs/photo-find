@@ -43,7 +43,7 @@ public class GameEndActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_end);
 
         txtGameName = findViewById(R.id.txtGameName);
-        pbLoading = findViewById(R.id.pbGame);
+        pbLoading = findViewById(R.id.pbLoading);
         btnReturn = findViewById(R.id.btnReturn);
         rlContent = findViewById(R.id.rlContent);
         rlContent.setVisibility(View.GONE);
@@ -75,6 +75,11 @@ public class GameEndActivity extends AppCompatActivity {
         model.getGameName().observe(this, game -> {
             if (game != null) {
                 txtGameName.setText(game.getName());
+
+                if (game.getPlayers() == null) {
+                    pbLoading.setVisibility(View.GONE);
+                    rlContent.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

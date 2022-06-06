@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.photofind.R;
 import com.example.photofind.adapters.OrganizerImageAdapter;
@@ -35,6 +36,7 @@ public class CreateGameActivity extends AppCompatActivity {
 
     private Button btnCreateNewGame;
     private Button btnAddCheckpoint;
+    private TextView txtCheckpointText;
     private EditText edtTxtInput;
     private RelativeLayout rlContent;
     private RelativeLayout rlCreatingGame;
@@ -61,6 +63,7 @@ public class CreateGameActivity extends AppCompatActivity {
         edtTxtInput = findViewById(R.id.edtTxtInput);
         rlContent = findViewById(R.id.rlContent);
         rlCreatingGame = findViewById(R.id.rlCreatingGame);
+        txtCheckpointText = findViewById(R.id.txtCheckpointText);
 
         checkpointList = new ArrayList<>();
 
@@ -99,8 +102,12 @@ public class CreateGameActivity extends AppCompatActivity {
                     .setTitle("Delete checkpoint?")
                     .setMessage("Are you sure you want to delete the checkpoint?")
                     .setNegativeButton("Cancel", null)
-                    .setPositiveButton("Delete", ((dialogInterface, i) -> imageAdapter.removeItem(position)))
+                    .setPositiveButton("Delete", ((dialogInterface, i) -> removeCheckpoint(position)))
                     .show();
+
+            if (checkpointList.size() == 0) {
+                txtCheckpointText.setText(getResources().getString(R.string.add_checkpoints));
+            }
         });
 
         // Listen for when game is created and start new view OrganizerLobbyActivity
@@ -123,6 +130,16 @@ public class CreateGameActivity extends AppCompatActivity {
                 .show();
     }
 
+    public void removeCheckpoint(int position) {
+        imageAdapter.removeItem(position);
+
+        if (checkpointList.size() == 0) {
+            txtCheckpointText.setText(getResources().getString(R.string.add_checkpoints));
+        } else {
+            txtCheckpointText.setText("Checkpoints added: " + checkpointList.size());
+        }
+    }
+
     public void startOrganizerLobbyActivity() {
         Intent intent = new Intent(this, OrganizerLobbyActivity.class);
         startActivity(intent);
@@ -141,6 +158,7 @@ public class CreateGameActivity extends AppCompatActivity {
                         TempCheckpoint checkpoint = new TempCheckpoint(imageUri, latLng, title);
 
                         checkpointList.add(checkpoint);
+                        txtCheckpointText.setText("Checkpoints added: " + checkpointList.size());
                         imageAdapter.notifyDataSetChanged();
                     }
                 }
