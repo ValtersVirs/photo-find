@@ -28,8 +28,7 @@ public class OrganizerPlayerViewModel extends ViewModel {
     private Long playerCount;
 
     private MutableLiveData<ArrayList<Checkpoint>> playerCheckpoints;
-    private ArrayList<Checkpoint> newCheckpointList;
-    private MutableLiveData<Checkpoint> updatedCheckpoint;
+    private ArrayList<Checkpoint> tempCheckpointList;
     private String playerId;
 
     private ChildEventListener playerCheckpointListener;
@@ -39,12 +38,13 @@ public class OrganizerPlayerViewModel extends ViewModel {
         this.gameId = gameId;
         if (playerList == null) {
             playerList = new MutableLiveData<>();
-            loadPlayers();
+            loadPlayerList();
         }
         return playerList;
     }
-
-    public void loadPlayers() {
+    
+    // Loads current game's player list
+    public void loadPlayerList() {
         database.getGames().child(gameId + "/players").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshots) {
@@ -52,7 +52,6 @@ public class OrganizerPlayerViewModel extends ViewModel {
                 totalPlayers = 0L;
                 playerCount = 0L;
                 if (snapshots.hasChildren()) {
-                    totalPlayers = snapshots.getChildrenCount();
                     totalPlayers = snapshots.getChildrenCount();
                     for (DataSnapshot snapshot : snapshots.getChildren()) {
                         loadPlayer(snapshot.getKey());
@@ -70,12 +69,14 @@ public class OrganizerPlayerViewModel extends ViewModel {
 
     }
 
+    // Loads a player
     public void loadPlayer(String playerId) {
         database.getPlayers().child(playerId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 newPlayerList.add(snapshot.getValue(Player.class));
                 playerCount++;
+                // Update players only when all are loaded
                 if (playerCount >= totalPlayers) {
                     playerList.setValue(newPlayerList);
                 }
@@ -89,15 +90,17 @@ public class OrganizerPlayerViewModel extends ViewModel {
     }
 
     public LiveData<ArrayList<Checkpoint>> getCheckpoints(String playerId) {
-        if (this.playerId != null && !playerId.equals(this.playerId)) {
+        if (this.playerId != null && !playerId.equals(this.playerId)) { // Different player
+            // Remove previous player listener
             database.getPlayers().child(this.playerId + "/checkpoints").removeEventListener(playerCheckpointListener);
+            // Remove previous player checkpoint listeners
             for (Map.Entry<String, ValueEventListener> checkpointListener : checkpointListeners.entrySet()) {
                 database.getCheckpoints().child(checkpointListener.getKey()).removeEventListener(checkpointListener.getValue());
             }
             this.playerId = playerId;
             playerCheckpoints = new MutableLiveData<>();
             loadCheckpoints();
-        } else if (playerCheckpoints == null) {
+        } else if (playerCheckpoints == null) { // Player not set yet
             this.playerId = playerId;
             checkpointListeners = new HashMap<>();
             playerCheckpoints = new MutableLiveData<>();
@@ -106,8 +109,9 @@ public class OrganizerPlayerViewModel extends ViewModel {
         return playerCheckpoints;
     }
 
+    // Loads checkpoints
     public void loadCheckpoints() {
-        newCheckpointList = new ArrayList<>();
+        tempCheckpointList = new ArrayList<>();
         playerCheckpointListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -138,6 +142,7 @@ public class OrganizerPlayerViewModel extends ViewModel {
         database.getPlayers().child(playerId + "/checkpoints").addChildEventListener(playerCheckpointListener);
     }
 
+    // Adds a listener to a checkpoint that listens to data change
     public void addCheckpointListener(String checkpointId) {
         ValueEventListener tempCheckpointListener = new ValueEventListener() {
             @Override
@@ -146,16 +151,20 @@ public class OrganizerPlayerViewModel extends ViewModel {
                     Checkpoint checkpoint = snapshot.getValue(Checkpoint.class);
                     String newId = checkpoint.getId();
                     String oldId;
-                    for (int i = 0; i < newCheckpointList.size(); i++) {
-                        oldId = newCheckpointList.get(i).getId();
+
+                    // If a checkpoint is updated, find it and update the checkpoint list
+                    for (int i = 0; i < tempCheckpointList.size(); i++) {
+                        oldId = tempCheckpointList.get(i).getId();
                         if (newId.equals(oldId)) {
-                            newCheckpointList.set(i, checkpoint);
-                            playerCheckpoints.setValue(newCheckpointList);
+                            tempCheckpointList.set(i, checkpoint);
+                            playerCheckpoints.setValue(tempCheckpointList);
                             return;
                         }
                     }
-                    newCheckpointList.add(checkpoint);
-                    playerCheckpoints.setValue(newCheckpointList);
+
+                    // If a checkpoint is added, add it to the checkpoint list
+                    tempCheckpointList.add(checkpoint);
+                    playerCheckpoints.setValue(tempCheckpointList);
                 }
             }
 
@@ -165,32 +174,9 @@ public class OrganizerPlayerViewModel extends ViewModel {
             }
         };
 
+        // Add checkpoint listener to an array so it can be removed when changing observed player
         checkpointListeners.put(checkpointId, tempCheckpointListener);
 
         database.getCheckpoints().child(checkpointId).addValueEventListener(tempCheckpointListener);
     }
-
-    public LiveData<Checkpoint> getUpdatedCheckpoint(String playerId) {
-        if (updatedCheckpoint == null) {
-            updatedCheckpoint = new MutableLiveData<>();
-        }
-        return updatedCheckpoint;
-    }
-
-    public void setUpdatedCheckpoint(String checkpointId) {
-        database.getCheckpoints().child(checkpointId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot != null) {
-                    updatedCheckpoint.setValue(snapshot.getValue(Checkpoint.class));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
 }

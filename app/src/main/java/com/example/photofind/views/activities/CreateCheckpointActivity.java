@@ -12,6 +12,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -28,7 +30,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -94,22 +99,12 @@ public class CreateCheckpointActivity extends AppCompatActivity {
         });
     }
 
+    // Saves checkpoint and returns to previous activity
     public void saveCheckpoint() {
         latLng = model.getLatLng().getValue();
+        String checkpointTitle = edtTitle.getText().toString();
 
-        if (latLng == null) {
-            dialogError = new MaterialAlertDialogBuilder(this);
-            dialogError
-                    .setTitle("Add a location")
-                    .setPositiveButton("ok", null)
-                    .show();
-        } else if (pictureUri == null) {
-            dialogError = new MaterialAlertDialogBuilder(this);
-            dialogError
-                    .setTitle("Add an image")
-                    .setPositiveButton("ok", null)
-                    .show();
-        } else {
+        if (validateLocation(latLng) && validateTitle(checkpointTitle) && validateImage(pictureUri)) {
             Intent data = new Intent();
             data.putExtra("imageUri", pictureUri);
             data.putExtra("latLng", latLng);
@@ -119,18 +114,57 @@ public class CreateCheckpointActivity extends AppCompatActivity {
         }
     }
 
+    public void displayErrorMessage(String errorMessage) {
+        dialogError = new MaterialAlertDialogBuilder(this);
+        dialogError
+                .setTitle(errorMessage)
+                .setPositiveButton("Ok", null)
+                .show();
+    }
+
+    public Boolean validateLocation(LatLng latLng) {
+        if (latLng == null) {
+            displayErrorMessage("Add a location");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public Boolean validateTitle(String checkpointTitle) {
+        Integer length = checkpointTitle.length();
+        if (length > 30) {
+            displayErrorMessage("Title can't exceed 30 characters");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public Boolean validateImage(Uri pictureUri) {
+        if (pictureUri == null) {
+            displayErrorMessage("Add an image");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public void goBack() {
         finish();
     }
 
+    // Launcher for camera
     ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
+                // On return from camera activity
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         File file = new File(currentPhotoPath);
-                        Uri imageUri = Uri.fromFile(file);
+                        File compressFile = compressImage(file);
+                        Uri imageUri = Uri.fromFile(compressFile);
 
                         if (imageUri != null) {
                             pictureUri = imageUri;
@@ -139,32 +173,6 @@ public class CreateCheckpointActivity extends AppCompatActivity {
                     }
                 }
             });
-
-    ActivityResultLauncher<Intent> selectPictureLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        Intent data = result.getData();
-
-                        // Get actual file path from "content://" format
-                        Cursor cursor = getContentResolver().query(data.getData(), new String[] { android.provider.MediaStore.Images.ImageColumns.DATA }, null, null, null);
-                        cursor.moveToFirst();
-                        String filePath = cursor.getString(0);
-                        cursor.close();
-
-                        File file = new File(filePath);
-                        Uri imageUri = Uri.fromFile(file);
-
-                        if (imageUri != null) {
-                            pictureUri = imageUri;
-                            Glide.with(CreateCheckpointActivity.this).load(imageUri).into(picture);
-                        }
-                    }
-                }
-            }
-    );
 
     public void takePicture() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -183,23 +191,57 @@ public class CreateCheckpointActivity extends AppCompatActivity {
         }
     }
 
+    // Launcher for image picker
+    ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                // On return from image picker activity
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Intent data = result.getData();
+
+                        // Get actual file path from "content://" format
+                        Cursor cursor = getContentResolver().query(data.getData(), new String[] { android.provider.MediaStore.Images.ImageColumns.DATA }, null, null, null);
+                        cursor.moveToFirst();
+                        String filePath = cursor.getString(0);
+                        cursor.close();
+
+                        File file = new File(filePath);
+
+                        File imageFile = null;
+                        try {
+                            imageFile = createImageFile();
+
+                            InputStream inputStream = new FileInputStream(file);
+                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                            inputStream.close();
+
+                            FileOutputStream outputStream = new FileOutputStream(imageFile);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                            outputStream.close();
+                        } catch (IOException ex) {}
+                        
+                        Uri imageUri = null;
+                        if (imageFile != null) {
+                            File compressFile = compressImage(imageFile);
+                            imageUri = Uri.fromFile(compressFile);
+                        }
+
+                        if (imageUri != null) {
+                            pictureUri = imageUri;
+                            Glide.with(CreateCheckpointActivity.this).load(imageUri).into(picture);
+                        }
+                    }
+                }
+            }
+    );
+
     public void pickImage() {
-        /*
-        Intent fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        fileIntent.setType("image/*");
-
         Intent albumIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         albumIntent.setType("image/*");
 
-        Intent chooserIntent = Intent.createChooser(albumIntent, "Select Image");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {fileIntent});
-        selectPictureLauncher.launch(chooserIntent);
-        */
-
-        Intent albumIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        albumIntent.setType("image/*");
-
-        selectPictureLauncher.launch(albumIntent);
+        pickImageLauncher.launch(albumIntent);
     }
 
     public File createImageFile() throws IOException {
@@ -217,6 +259,46 @@ public class CreateCheckpointActivity extends AppCompatActivity {
         return image;
     }
 
+    public File compressImage(File file){
+        try {
+            // BitmapFactory options to downsize the image
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            o.inSampleSize = 4;
+
+            FileInputStream inputStream = new FileInputStream(file);
+            BitmapFactory.decodeStream(inputStream, null, o);
+            inputStream.close();
+
+            // The new size we want to scale to
+            final int REQUIRED_SIZE=75;
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
+                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
+                scale *= 2;
+            }
+
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            inputStream = new FileInputStream(file);
+
+            Bitmap selectedBitmap = BitmapFactory.decodeStream(inputStream, null, o2);
+            inputStream.close();
+
+            // Override the original image file
+            file.createNewFile();
+            FileOutputStream outputStream = new FileOutputStream(file);
+
+            selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 100 , outputStream);
+
+            return file;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -231,7 +313,7 @@ public class CreateCheckpointActivity extends AppCompatActivity {
             // Permission granted
             pickImage();
         } else {
-            // Permission not granted
+            // Permission not granted, request
             EasyPermissions.requestPermissions(this, "Allow the app to access your photos", REQUEST_EXTERNAL_STORAGE_PERMISSION, permissions);
         }
     }

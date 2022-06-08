@@ -4,10 +4,6 @@ public class PlayerCheckpoint {
     Player player;
     Checkpoint checkpoint;
 
-    public PlayerCheckpoint(Player player) {
-        this.player = player;
-    }
-
     public PlayerCheckpoint(Player player, Checkpoint checkpoint) {
         this.player = player;
         this.checkpoint = checkpoint;

@@ -15,9 +15,7 @@ import android.view.ViewGroup;
 
 import com.example.photofind.R;
 import com.example.photofind.adapters.PlayerCheckpointAdapter;
-import com.example.photofind.adapters.PlayerOrganizerGameAdapter;
 import com.example.photofind.models.Checkpoint;
-import com.example.photofind.models.PlayerCheckpoint;
 import com.example.photofind.viewmodels.PlayerGameViewModel;
 
 import java.util.ArrayList;

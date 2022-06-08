@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.photofind.R;
-import com.example.photofind.adapters.PlayerOrganizerAdapter;
+import com.example.photofind.adapters.OrganizerLobbyAdapter;
 import com.example.photofind.models.Player;
 import com.example.photofind.viewmodels.OrganizerLobbyViewModel;
 
@@ -35,7 +35,7 @@ public class OrganizerLobbyActivity extends AppCompatActivity {
     private ProgressBar progressBarGame;
 
     private SharedPreferences sharedPref;
-    private PlayerOrganizerAdapter playerAdapter;
+    private OrganizerLobbyAdapter playerAdapter;
     private OrganizerLobbyViewModel model;
 
     @Override
@@ -61,7 +61,7 @@ public class OrganizerLobbyActivity extends AppCompatActivity {
         rvPlayerList.setLayoutManager(new LinearLayoutManager(this));
 
         playerList = new ArrayList<>();
-        playerAdapter = new PlayerOrganizerAdapter(playerList, gameId);
+        playerAdapter = new OrganizerLobbyAdapter(playerList, gameId);
         rvPlayerList.setAdapter(playerAdapter);
 
         btnStartGame.setOnClickListener(view -> {

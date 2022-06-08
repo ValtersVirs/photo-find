@@ -14,11 +14,11 @@ import com.example.photofind.models.Player;
 
 import java.util.ArrayList;
 
-public class PlayerOrganizerAdapter extends RecyclerView.Adapter<PlayerOrganizerAdapter.ViewHolder> {
+public class OrganizerLobbyAdapter extends RecyclerView.Adapter<OrganizerLobbyAdapter.ViewHolder> {
     ArrayList<Player> playerList;
     String gameId;
 
-    public PlayerOrganizerAdapter(ArrayList<Player> playerList, String gameId) {
+    public OrganizerLobbyAdapter(ArrayList<Player> playerList, String gameId) {
         this.playerList = playerList;
         this.gameId = gameId;
     }

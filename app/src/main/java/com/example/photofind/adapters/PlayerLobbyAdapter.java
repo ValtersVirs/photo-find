@@ -13,10 +13,10 @@ import com.example.photofind.models.Player;
 
 import java.util.ArrayList;
 
-public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder> {
+public class PlayerLobbyAdapter extends RecyclerView.Adapter<PlayerLobbyAdapter.ViewHolder> {
     ArrayList<Player> playerList;
 
-    public PlayerAdapter(ArrayList<Player> playerList) {
+    public PlayerLobbyAdapter(ArrayList<Player> playerList) {
         this.playerList = playerList;
     }
 

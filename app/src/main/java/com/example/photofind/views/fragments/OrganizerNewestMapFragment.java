@@ -2,10 +2,13 @@ package com.example.photofind.views.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,6 +26,8 @@ import com.bumptech.glide.request.target.Target;
 import com.example.photofind.R;
 import com.example.photofind.models.Checkpoint;
 import com.example.photofind.viewmodels.OrganizerNewestViewModel;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -37,7 +42,9 @@ public class OrganizerNewestMapFragment extends Fragment {
 
     private String checkpointId;
     private Marker marker;
+    private LatLng defaultLatLng = new LatLng(56.8801729, 24.6057484); // Latvia's coordinates
 
+    private FusedLocationProviderClient location;
     private OrganizerNewestViewModel model;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -87,6 +94,7 @@ public class OrganizerNewestMapFragment extends Fragment {
                 LatLng latLng = new LatLng(checkpoint.getLatitude(), checkpoint.getLongitude());
                 marker = googleMap.addMarker(new MarkerOptions().position(latLng));
                 marker.setTag(checkpoint);
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 6));
             });
         }
     };
@@ -109,6 +117,7 @@ public class OrganizerNewestMapFragment extends Fragment {
         }
 
         model = new ViewModelProvider(requireActivity()).get(OrganizerNewestViewModel.class);
+        location = LocationServices.getFusedLocationProviderClient(requireActivity());
 
         checkpointId = getArguments().getString("checkpointId");
     }

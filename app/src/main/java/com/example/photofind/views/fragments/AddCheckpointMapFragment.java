@@ -21,6 +21,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -28,6 +29,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class AddCheckpointMapFragment extends Fragment {
 
     private Marker marker;
+    private LatLng defaultLatLng = new LatLng(56.8801729, 24.6057484);
 
     private CreateCheckpointViewModel model;
     private FusedLocationProviderClient location;
@@ -35,15 +37,7 @@ public class AddCheckpointMapFragment extends Fragment {
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            googleMap.setOnMapClickListener(latLng -> {
-                if (marker != null) {
-                    marker.remove();
-                }
-                marker = googleMap.addMarker(new MarkerOptions().position(latLng));
-                model.setLatLng(latLng);
-            });
-
-
+            // Check location permissions and move map to a location
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 location.getLastLocation().addOnSuccessListener(curLocation -> {
@@ -52,10 +46,24 @@ public class AddCheckpointMapFragment extends Fragment {
                         marker = googleMap.addMarker(new MarkerOptions().position(latLng));
                         model.setLatLng(latLng);
                         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                    } else {
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 6));
                     }
                 });
+            } else {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 6));
             }
 
+            // Add marker on map click
+            googleMap.setOnMapClickListener(latLng -> {
+                if (marker != null) {
+                    marker.remove();
+                }
+                marker = googleMap.addMarker(new MarkerOptions().position(latLng));
+                model.setLatLng(latLng);
+            });
+
+            // Listen for manual coordinates entered in text field
             model.getManualLatLng().observe(requireActivity(), newLatLng -> {
                 if (marker != null) {
                     marker.remove();
@@ -63,22 +71,6 @@ public class AddCheckpointMapFragment extends Fragment {
                 marker = googleMap.addMarker(new MarkerOptions().position(newLatLng));
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng, 10));
             });
-
-
-
-            /*
-            if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-
-            location.getLastLocation().addOnSuccessListener(currentLocation -> {
-                if (currentLocation != null) {
-                    String a = "a";
-                }
-            });
-
-             */
         }
     };
 
@@ -93,11 +85,11 @@ public class AddCheckpointMapFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
+
         model = new ViewModelProvider(requireActivity()).get(CreateCheckpointViewModel.class);
         location = LocationServices.getFusedLocationProviderClient(requireActivity());
     }

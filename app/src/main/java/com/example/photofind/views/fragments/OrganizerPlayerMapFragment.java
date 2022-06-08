@@ -2,10 +2,13 @@ package com.example.photofind.views.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,6 +26,8 @@ import com.bumptech.glide.request.target.Target;
 import com.example.photofind.R;
 import com.example.photofind.models.Checkpoint;
 import com.example.photofind.viewmodels.OrganizerPlayerViewModel;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -38,12 +43,31 @@ public class OrganizerPlayerMapFragment extends Fragment {
     private String playerId;
     private Marker marker;
     private ArrayList<Marker> markerList;
+    private LatLng defaultLatLng = new LatLng(56.8801729, 24.6057484); // Latvia's coordinates
 
+    private FusedLocationProviderClient location;
     private OrganizerPlayerViewModel model;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override
         public void onMapReady(GoogleMap googleMap) {
+            // Check location permissions and move map accordingly
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                location.getLastLocation().addOnSuccessListener(curLocation -> {
+                    if (curLocation != null) {
+                        LatLng latLng = new LatLng(curLocation.getLatitude(), curLocation.getLongitude());
+                        // Move map to current GPS
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 6));
+                    } else {
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 6));
+                    }
+                });
+            } else {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 6));
+            }
+
+            // Display checkpoint card when clicking on a checkpoint
             googleMap.setOnMarkerClickListener(marker -> {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
 
@@ -83,6 +107,7 @@ public class OrganizerPlayerMapFragment extends Fragment {
                 return true;
             });
 
+            // Observe when checkpoints are added or updated
             model.getCheckpoints(playerId).observe(getViewLifecycleOwner(), newCheckpoints -> {
                 googleMap.clear();
                 markerList = new ArrayList<>();
@@ -91,17 +116,6 @@ public class OrganizerPlayerMapFragment extends Fragment {
                     marker = googleMap.addMarker(new MarkerOptions().position(latLng));
                     marker.setTag(checkpoint);
                     markerList.add(marker);
-                }
-            });
-
-            model.getUpdatedCheckpoint(playerId).observe(getViewLifecycleOwner(), newCheckpoint -> {
-                if (markerList != null) {
-                    for (Marker marker : markerList) {
-                        Checkpoint curCheckpoint = (Checkpoint) marker.getTag();
-                        if (curCheckpoint.getId().equals(newCheckpoint.getId()) && curCheckpoint.getImagePath() == null) {
-                            marker.setTag(newCheckpoint);
-                        }
-                    }
                 }
             });
         }
@@ -118,13 +132,13 @@ public class OrganizerPlayerMapFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
 
         model = new ViewModelProvider(requireActivity()).get(OrganizerPlayerViewModel.class);
+        location = LocationServices.getFusedLocationProviderClient(requireActivity());
 
         playerId = getArguments().getString("playerId");
     }

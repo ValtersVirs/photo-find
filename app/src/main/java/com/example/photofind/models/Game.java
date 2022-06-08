@@ -14,14 +14,6 @@ public class Game {
 
     public Game() {}
 
-
-
-    public Game(String name, Boolean started, Boolean joinAfterStart) {
-        this.name = name;
-        this.started = started;
-        this.joinAfterStart = joinAfterStart;
-    }
-
     public Game(String id, String name, String code, Boolean started, Boolean ended, Boolean joinAfterStart) {
         this.id = id;
         this.name = name;

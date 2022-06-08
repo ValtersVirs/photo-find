@@ -26,8 +26,6 @@ public class PlayerGameViewModel extends ViewModel {
 
     private MutableLiveData<ArrayList<Checkpoint>> playerCheckpointList;
     private ArrayList<Checkpoint> newPlayerCheckpointList;
-    private MutableLiveData<Checkpoint> updatedCheckpoint;
-    private Long childrenNr;
 
     private MutableLiveData<ArrayList<Checkpoint>> gameCheckpointList;
     private ArrayList<Checkpoint> newGameCheckpointList;
@@ -93,27 +91,6 @@ public class PlayerGameViewModel extends ViewModel {
                     newPlayerCheckpointList.add(checkpoint);
                     playerCheckpointList.setValue(newPlayerCheckpointList);
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    public LiveData<Checkpoint> getUpdatedCheckpoint(String playerId) {
-        if (updatedCheckpoint == null) {
-            updatedCheckpoint = new MutableLiveData<>();
-        }
-        return updatedCheckpoint;
-    }
-
-    public void setUpdatedCheckpoint(String checkpointId) {
-        database.getCheckpoints().child(checkpointId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                updatedCheckpoint.setValue(snapshot.getValue(Checkpoint.class));
             }
 
             @Override

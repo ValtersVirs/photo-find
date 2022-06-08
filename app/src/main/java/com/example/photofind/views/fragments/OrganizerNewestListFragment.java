@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.photofind.R;
-import com.example.photofind.adapters.PlayerOrganizerNewestAdapter;
+import com.example.photofind.adapters.OrganizerNewestAdapter;
 import com.example.photofind.models.PlayerCheckpoint;
 import com.example.photofind.viewmodels.OrganizerNewestViewModel;
 
@@ -29,7 +29,7 @@ public class OrganizerNewestListFragment extends Fragment {
 
     private RecyclerView rvCheckpointList;
 
-    private PlayerOrganizerNewestAdapter checkpointAdapter;
+    private OrganizerNewestAdapter checkpointAdapter;
     private SharedPreferences sharedPref;
     private OrganizerNewestViewModel model;
     private FragmentManager manager;
@@ -54,7 +54,7 @@ public class OrganizerNewestListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_organizer_newest_list, container, false);
 
         manager = getParentFragmentManager();
-        checkpointAdapter = new PlayerOrganizerNewestAdapter(checkpointList, manager);
+        checkpointAdapter = new OrganizerNewestAdapter(checkpointList, manager);
 
         rvCheckpointList = view.findViewById(R.id.rvNewestList);
         rvCheckpointList.setHasFixedSize(true);

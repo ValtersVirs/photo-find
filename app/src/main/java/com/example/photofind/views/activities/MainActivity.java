@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Request location permissions
         requestLocationPermission();
 
         model = new ViewModelProvider(this).get(MainViewModel.class);
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         rlButtons = findViewById(R.id.rlButtons);
         pbLoadGame = findViewById(R.id.pbLoadGame);
 
+        // Check if user is already in a game and show the according screen
         if (!gameId.isEmpty()) {
             rlButtons.setVisibility(View.GONE);
             pbLoadGame.setVisibility(View.VISIBLE);
@@ -131,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         if(EasyPermissions.hasPermissions(this, permissions)) {
             // Permission granted
         } else {
+            // Permission not granted
             EasyPermissions.requestPermissions(this, "Please grant the location permission", REQUEST_LOCATION_PERMISSION, permissions);
         }
     }

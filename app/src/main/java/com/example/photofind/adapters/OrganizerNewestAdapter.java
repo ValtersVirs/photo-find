@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,16 +25,15 @@ import com.example.photofind.models.Checkpoint;
 import com.example.photofind.models.Player;
 import com.example.photofind.models.PlayerCheckpoint;
 import com.example.photofind.views.fragments.OrganizerNewestMapFragment;
-import com.example.photofind.views.fragments.OrganizerPlayerMapFragment;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PlayerOrganizerNewestAdapter extends RecyclerView.Adapter<PlayerOrganizerNewestAdapter.ViewHolder> {
+public class OrganizerNewestAdapter extends RecyclerView.Adapter<OrganizerNewestAdapter.ViewHolder> {
     ArrayList<PlayerCheckpoint> checkpointList;
     FragmentManager manager;
 
-    public PlayerOrganizerNewestAdapter(ArrayList<PlayerCheckpoint> checkpointList, FragmentManager manager) {
+    public OrganizerNewestAdapter(ArrayList<PlayerCheckpoint> checkpointList, FragmentManager manager) {
         this.checkpointList = checkpointList;
         this.manager = manager;
     }
@@ -48,7 +46,7 @@ public class PlayerOrganizerNewestAdapter extends RecyclerView.Adapter<PlayerOrg
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PlayerOrganizerNewestAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull OrganizerNewestAdapter.ViewHolder holder, int position) {
         PlayerCheckpoint playerCheckpoint = checkpointList.get(position);
         holder.player = playerCheckpoint.getPlayer();
         holder.checkpoint = playerCheckpoint.getCheckpoint();

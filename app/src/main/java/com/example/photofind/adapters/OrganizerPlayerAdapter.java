@@ -18,11 +18,11 @@ import com.example.photofind.views.fragments.OrganizerPlayerMapFragment;
 
 import java.util.ArrayList;
 
-public class PlayerOrganizerGameAdapter extends RecyclerView.Adapter<PlayerOrganizerGameAdapter.ViewHolder> {
+public class OrganizerPlayerAdapter extends RecyclerView.Adapter<OrganizerPlayerAdapter.ViewHolder> {
     ArrayList<Player> playerList;
     FragmentManager manager;
 
-    public PlayerOrganizerGameAdapter(ArrayList<Player> playerList, FragmentManager manager) {
+    public OrganizerPlayerAdapter(ArrayList<Player> playerList, FragmentManager manager) {
         this.playerList = playerList;
         this.manager = manager;
     }

@@ -39,10 +39,11 @@ public class JoinGameActivity extends AppCompatActivity {
 
         model = new ViewModelProvider(this).get(JoinGameViewModel.class);
 
-        // Button click to join game
+        // On button click join game
         btnJoinGame.setOnClickListener(view -> {
             gameCode = edtGameCode.getText().toString().trim();
             playerName = edtPlayerName.getText().toString().trim();
+
             if (validateName(playerName) && validateCode(gameCode)) {
                 model.checkGameCode(playerName, gameCode.toUpperCase());
             }
@@ -58,13 +59,13 @@ public class JoinGameActivity extends AppCompatActivity {
                     joinGameStarted(result.get("gameId"), result.get("playerId"));
                     break;
                 case "game_ended":
-                    joinError("Game has ended");
+                    displayErrorMessage("Game has ended");
                     break;
                 case "game_started":
-                    joinError("Game has already started");
+                    displayErrorMessage("Game has already started");
                     break;
                 default:
-                    joinError("Game not found");
+                    displayErrorMessage("Game not found");
             }
         });
     }
@@ -89,7 +90,7 @@ public class JoinGameActivity extends AppCompatActivity {
         startPlayerGameActivity();
     }
 
-    public void joinError(String errorMessage) {
+    public void displayErrorMessage(String errorMessage) {
         dialogError = new MaterialAlertDialogBuilder(this);
         dialogError
                 .setTitle(errorMessage)
@@ -100,18 +101,10 @@ public class JoinGameActivity extends AppCompatActivity {
     public Boolean validateName(String playerName) {
         Integer length = playerName.length();
         if (length == 0) {
-            dialogError = new MaterialAlertDialogBuilder(this);
-            dialogError
-                    .setTitle("Enter your name")
-                    .setPositiveButton("ok", null)
-                    .show();
+            displayErrorMessage("Enter your name");
             return false;
         } else if (length < 3 || length > 30) {
-            dialogError = new MaterialAlertDialogBuilder(this);
-            dialogError
-                    .setTitle("Name must be between 3 and 30 characters")
-                    .setPositiveButton("ok", null)
-                    .show();
+            displayErrorMessage("Name must be between 3 and 30 characters");
             return false;
         } else {
             return true;
@@ -121,11 +114,7 @@ public class JoinGameActivity extends AppCompatActivity {
     public Boolean validateCode(String gameCode) {
         Integer length = gameCode.length();
         if (length == 0) {
-            dialogError = new MaterialAlertDialogBuilder(this);
-            dialogError
-                    .setTitle("Enter Game Code")
-                    .setPositiveButton("ok", null)
-                    .show();
+            displayErrorMessage("Enter game code");
             return false;
         } else {
             return true;

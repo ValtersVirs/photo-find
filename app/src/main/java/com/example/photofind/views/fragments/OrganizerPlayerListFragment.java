@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.photofind.R;
-import com.example.photofind.adapters.PlayerOrganizerGameAdapter;
+import com.example.photofind.adapters.OrganizerPlayerAdapter;
 import com.example.photofind.models.Player;
 import com.example.photofind.viewmodels.OrganizerPlayerViewModel;
 
@@ -28,7 +28,7 @@ public class OrganizerPlayerListFragment extends Fragment {
 
     private RecyclerView rvPlayerList;
 
-    private PlayerOrganizerGameAdapter playerAdapter;
+    private OrganizerPlayerAdapter playerAdapter;
     private SharedPreferences sharedPref;
     private OrganizerPlayerViewModel model;
     private FragmentManager manager;
@@ -54,7 +54,7 @@ public class OrganizerPlayerListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_organizer_player_list, container, false);
 
         manager = getParentFragmentManager();
-        playerAdapter = new PlayerOrganizerGameAdapter(playerList, manager);
+        playerAdapter = new OrganizerPlayerAdapter(playerList, manager);
 
         rvPlayerList = view.findViewById(R.id.rvPlayerList);
         rvPlayerList.setHasFixedSize(true);

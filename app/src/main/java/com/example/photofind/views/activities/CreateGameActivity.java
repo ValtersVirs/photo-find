@@ -76,22 +76,7 @@ public class CreateGameActivity extends AppCompatActivity {
 
         optionStarted = findViewById(R.id.swOptionStarted);
 
-        btnCreateNewGame.setOnClickListener(view -> {
-            String gameName = edtTxtInput.getText().toString().trim();
-
-            Boolean joinAfterStart = optionStarted.isChecked();
-
-            if (gameName.isEmpty()) {
-                joinError("Enter a name for game");
-            } else if (checkpointList.isEmpty()) {
-                joinError("Add at least 1 checkpoint");
-            } else {
-                rlContent.setVisibility(View.GONE);
-                rlCreatingGame.setVisibility(View.VISIBLE);
-                model.createGame(gameName, checkpointList, joinAfterStart);
-            }
-        });
-
+        btnCreateNewGame.setOnClickListener(view -> createGame());
 
         btnAddCheckpoint.setOnClickListener(view -> createCheckpoint());
 
@@ -121,13 +106,46 @@ public class CreateGameActivity extends AppCompatActivity {
             startOrganizerLobbyActivity();
         });
     }
+    
+    public void createGame() {
+        String gameName = edtTxtInput.getText().toString().trim();
+        Boolean joinAfterStart = optionStarted.isChecked();
 
-    public void joinError(String errorMessage) {
+        if (validateName(gameName) && validateCheckpoints()) {
+            rlContent.setVisibility(View.GONE);
+            rlCreatingGame.setVisibility(View.VISIBLE);
+            model.createGame(gameName, checkpointList, joinAfterStart);
+        }
+    }
+
+    public void displayErrorMessage(String errorMessage) {
         dialogError = new MaterialAlertDialogBuilder(this);
         dialogError
                 .setTitle(errorMessage)
                 .setPositiveButton("Ok", null)
                 .show();
+    }
+
+    public Boolean validateName(String gameName) {
+        Integer length = gameName.length();
+        if (length == 0) {
+            displayErrorMessage("Enter a name for game");
+            return false;
+        } else if (length < 3 || length > 30) {
+            displayErrorMessage("Name must be between 3 and 30 characters");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public Boolean validateCheckpoints() {
+        if (checkpointList.isEmpty()) {
+            displayErrorMessage("Add at least 1 checkpoint");
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public void removeCheckpoint(int position) {
@@ -140,12 +158,8 @@ public class CreateGameActivity extends AppCompatActivity {
         }
     }
 
-    public void startOrganizerLobbyActivity() {
-        Intent intent = new Intent(this, OrganizerLobbyActivity.class);
-        startActivity(intent);
-    }
-
-    ActivityResultLauncher<Intent> getCheckpoint = registerForActivityResult(
+    // Launcher for checkpoint creation activity
+    ActivityResultLauncher<Intent> addCheckpointLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -166,6 +180,11 @@ public class CreateGameActivity extends AppCompatActivity {
 
     public void createCheckpoint() {
         Intent intent = new Intent(this, CreateCheckpointActivity.class);
-        getCheckpoint.launch(intent);
+        addCheckpointLauncher.launch(intent);
+    }
+
+    public void startOrganizerLobbyActivity() {
+        Intent intent = new Intent(this, OrganizerLobbyActivity.class);
+        startActivity(intent);
     }
 }

@@ -15,8 +15,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.photofind.adapters.PlayerLobbyAdapter;
 import com.example.photofind.models.Player;
-import com.example.photofind.adapters.PlayerAdapter;
 import com.example.photofind.R;
 import com.example.photofind.viewmodels.PlayerLobbyViewModel;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -37,7 +37,7 @@ public class PlayerLobbyActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPref;
     private RecyclerView rvPlayerList;
-    private PlayerAdapter playerAdapter;
+    private PlayerLobbyAdapter playerAdapter;
     private PlayerLobbyViewModel model;
     private MaterialAlertDialogBuilder dialogConfirm;
 
@@ -65,7 +65,7 @@ public class PlayerLobbyActivity extends AppCompatActivity {
         rvPlayerList.setLayoutManager(new LinearLayoutManager(this));
 
         playerList = new ArrayList<>();
-        playerAdapter = new PlayerAdapter(playerList);
+        playerAdapter = new PlayerLobbyAdapter(playerList);
         rvPlayerList.setAdapter(playerAdapter);
 
         btnLeave.setOnClickListener(v -> confirmLeaveGame());

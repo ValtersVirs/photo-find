@@ -2,12 +2,15 @@ package com.example.photofind.views.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,6 +28,8 @@ import com.bumptech.glide.request.target.Target;
 import com.example.photofind.R;
 import com.example.photofind.models.Checkpoint;
 import com.example.photofind.viewmodels.PlayerGameViewModel;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -40,13 +45,30 @@ public class PlayerMapFragment extends Fragment {
     private String playerId;
     private Marker marker;
     private ArrayList<Marker> markerList;
+    private LatLng defaultLatLng = new LatLng(56.8801729, 24.6057484);
 
+    private FusedLocationProviderClient location;
     private PlayerGameViewModel model;
     private SharedPreferences sharedPref;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override
         public void onMapReady(GoogleMap googleMap) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                location.getLastLocation().addOnSuccessListener(curLocation -> {
+                    if (curLocation != null) {
+                        LatLng latLng = new LatLng(curLocation.getLatitude(), curLocation.getLongitude());
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 6));
+                    } else {
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 6));
+                    }
+                });
+            } else {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 6));
+            }
+
+            // Show checkpoint card on marker click
             googleMap.setOnMarkerClickListener(marker -> {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
 
@@ -86,6 +108,7 @@ public class PlayerMapFragment extends Fragment {
                 return true;
             });
 
+            // Observes new markers and sets them on map
             model.getCheckpoints(playerId).observe(getViewLifecycleOwner(), newCheckpoints -> {
                 googleMap.clear();
                 markerList = new ArrayList<>();
@@ -94,17 +117,6 @@ public class PlayerMapFragment extends Fragment {
                     marker = googleMap.addMarker(new MarkerOptions().position(latLng));
                     marker.setTag(checkpoint);
                     markerList.add(marker);
-                }
-            });
-
-            model.getUpdatedCheckpoint(playerId).observe(getViewLifecycleOwner(), newCheckpoint -> {
-                if (markerList != null) {
-                    for (Marker marker : markerList) {
-                        Checkpoint curCheckpoint = (Checkpoint) marker.getTag();
-                        if (curCheckpoint.getId().equals(newCheckpoint.getId()) && curCheckpoint.getImagePath() == null) {
-                            marker.setTag(newCheckpoint);
-                        }
-                    }
                 }
             });
         }
@@ -121,8 +133,7 @@ public class PlayerMapFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
@@ -130,5 +141,6 @@ public class PlayerMapFragment extends Fragment {
         sharedPref = requireActivity().getSharedPreferences("CurrentGame", Context.MODE_PRIVATE);
         playerId = sharedPref.getString("playerId", "");
         model = new ViewModelProvider(requireActivity()).get(PlayerGameViewModel.class);
+        location = LocationServices.getFusedLocationProviderClient(requireActivity());
     }
 }
