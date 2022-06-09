@@ -81,6 +81,7 @@ public class OrganizerPlayerMapFragment extends Fragment {
                 ImageView imgCheckpointImage = (ImageView) alert.findViewById(R.id.imgCheckpointImage);
                 ProgressBar progressBar = (ProgressBar) alert.findViewById(R.id.pbImage);
                 Checkpoint checkpoint = (Checkpoint) marker.getTag();
+
                 if (checkpoint.getTitle() == null || checkpoint.getTitle().isEmpty()) {
                     txtCheckpointId.setVisibility(View.GONE);
                 } else {

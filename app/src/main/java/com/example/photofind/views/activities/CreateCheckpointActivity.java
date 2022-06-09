@@ -94,6 +94,7 @@ public class CreateCheckpointActivity extends AppCompatActivity {
 
         btnBack.setOnClickListener(view -> goBack());
 
+        // Show new coordinates in text field when location has been updated
         model.getLatLng().observe(this, newLatLng -> {
             edtCoordinates.setText(String.format("%.5f", newLatLng.latitude) + ", " + String.format("%.5f", newLatLng.longitude));
         });

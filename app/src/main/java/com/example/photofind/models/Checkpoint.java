@@ -22,20 +22,6 @@ public class Checkpoint {
         this.image = image;
     }
 
-    public Checkpoint(String id, Double latitude, Double longitude) {
-        this.id = id;
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
-
-    public Checkpoint(String id, String imagePath, String title, Double latitude, Double longitude) {
-        this.id = id;
-        this.imagePath = imagePath;
-        this.title = title;
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
-
     public Checkpoint(String id, String imagePath, String title, Double latitude, Double longitude, Long uploadedAt) {
         this.id = id;
         this.imagePath = imagePath;

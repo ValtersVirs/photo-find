@@ -88,7 +88,12 @@ public class GameEndViewModel extends ViewModel {
                 Integer count;
 
                 Player player = snapshot.getValue(Player.class);
-                count  = player.getCheckpoints().size();
+                // Player points == checkpoint count
+                if (player.getCheckpoints() == null) {
+                    count = 0;
+                } else {
+                    count = player.getCheckpoints().size();
+                }
 
                 PlayerRanking playerCheckpoints = new PlayerRanking(player, count);
                 tempPlayers.add(playerCheckpoints);
