@@ -21,7 +21,6 @@ import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.photofind.R;
@@ -165,8 +164,8 @@ public class CreateCheckpointActivity extends AppCompatActivity {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         File file = new File(currentPhotoPath);
                         // Compress the image
-                        File compressFile = compressImage(file);
-                        Uri imageUri = Uri.fromFile(compressFile);
+                        //File compressFile = compressImage(file);
+                        Uri imageUri = Uri.fromFile(file);
 
                         if (imageUri != null) {
                             pictureUri = imageUri;
@@ -224,13 +223,18 @@ public class CreateCheckpointActivity extends AppCompatActivity {
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
                             outputStream.close();
                         } catch (IOException ex) {}
-                        
+
+
                         Uri imageUri = null;
+                        /*
                         if (imageFile != null) {
                             // Compress the image
                             File compressFile = compressImage(imageFile);
                             imageUri = Uri.fromFile(compressFile);
                         }
+                        */
+
+                        imageUri = Uri.fromFile(imageFile);
 
                         if (imageUri != null) {
                             pictureUri = imageUri;
