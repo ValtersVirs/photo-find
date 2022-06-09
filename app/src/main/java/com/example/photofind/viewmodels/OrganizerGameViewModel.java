@@ -38,7 +38,7 @@ public class OrganizerGameViewModel extends ViewModel {
         database.getGames().child(gameId + "/checkpoints").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot result) {
-                ArrayList<Checkpoint> newCheckpointList = new ArrayList<>();
+                ArrayList<Checkpoint> tempCheckpointList = new ArrayList<>();
                 if (result.hasChildren()) {
                     checkpointCount = result.getChildrenCount();
                     checkpointNr = 0L;
@@ -50,11 +50,11 @@ public class OrganizerGameViewModel extends ViewModel {
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.getValue() != null) {
                                     Checkpoint tempCheckpoint = snapshot.getValue(Checkpoint.class);
-                                    newCheckpointList.add(tempCheckpoint);
+                                    tempCheckpointList.add(tempCheckpoint);
                                 }
                                 checkpointNr++;
                                 if (checkpointCount == checkpointNr) {
-                                    checkpointList.setValue(newCheckpointList);
+                                    checkpointList.setValue(tempCheckpointList);
                                 }
                             }
 
@@ -65,7 +65,7 @@ public class OrganizerGameViewModel extends ViewModel {
                         });
                     }
                 } else {
-                    checkpointList.setValue(newCheckpointList);
+                    checkpointList.setValue(tempCheckpointList);
                 }
             }
 

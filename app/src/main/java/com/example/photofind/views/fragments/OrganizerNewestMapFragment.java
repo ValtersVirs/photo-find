@@ -42,9 +42,7 @@ public class OrganizerNewestMapFragment extends Fragment {
 
     private String checkpointId;
     private Marker marker;
-    private LatLng defaultLatLng = new LatLng(56.8801729, 24.6057484); // Latvia's coordinates
 
-    private FusedLocationProviderClient location;
     private OrganizerNewestViewModel model;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -117,7 +115,6 @@ public class OrganizerNewestMapFragment extends Fragment {
         }
 
         model = new ViewModelProvider(requireActivity()).get(OrganizerNewestViewModel.class);
-        location = LocationServices.getFusedLocationProviderClient(requireActivity());
 
         checkpointId = getArguments().getString("checkpointId");
     }

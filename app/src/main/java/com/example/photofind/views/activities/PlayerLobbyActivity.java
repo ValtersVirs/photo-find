@@ -27,16 +27,16 @@ public class PlayerLobbyActivity extends AppCompatActivity {
 
     private String gameId;
     private String playerId;
-    private Button btnLeave;
     private ArrayList<Player> playerList;
 
     private TextView txtGameName;
     private TextView txtGameCode;
+    private Button btnLeave;
     private RelativeLayout rlContent;
-    private ProgressBar progressBarGame;
+    private ProgressBar pbGame;
+    private RecyclerView rvPlayerList;
 
     private SharedPreferences sharedPref;
-    private RecyclerView rvPlayerList;
     private PlayerLobbyAdapter playerAdapter;
     private PlayerLobbyViewModel model;
     private MaterialAlertDialogBuilder dialogConfirm;
@@ -56,7 +56,7 @@ public class PlayerLobbyActivity extends AppCompatActivity {
         txtGameCode = findViewById(R.id.txtGameCode);
         btnLeave = findViewById(R.id.btnLeave);
 
-        progressBarGame = findViewById(R.id.pbGame);
+        pbGame = findViewById(R.id.pbGame);
         rlContent = findViewById(R.id.rlContent);
         rlContent.setVisibility(View.GONE);
 
@@ -70,12 +70,14 @@ public class PlayerLobbyActivity extends AppCompatActivity {
 
         btnLeave.setOnClickListener(v -> confirmLeaveGame());
 
+        // Observes when game is started
         model.getIsStarted(gameId).observe(this, isStarted -> {
             if (isStarted) {
                 startPlayerGameActivity();
             }
         });
 
+        // Observes if player is removed from the game
         model.checkRemoved(gameId, playerId).observe(this, removedFromGame -> {
             if (removedFromGame) {
                 SharedPreferences.Editor editor = sharedPref.edit();
@@ -88,16 +90,18 @@ public class PlayerLobbyActivity extends AppCompatActivity {
             }
         });
 
+        // Observes the game
         model.getGame(gameId).observe(this, game -> {
             if (game != null) {
                 txtGameName.setText(game.getName());
                 txtGameCode.setText(game.getCode());
 
-                progressBarGame.setVisibility(View.GONE);
+                pbGame.setVisibility(View.GONE);
                 rlContent.setVisibility(View.VISIBLE);
             }
         });
 
+        // Observes players in current game
         model.getGamePlayers(gameId).observe(this, newPlayers -> {
             playerList.clear();
             playerList.addAll(newPlayers);

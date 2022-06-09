@@ -36,13 +36,14 @@ public class JoinGameViewModel extends ViewModel {
         database.getGames().child(gameId + "/players/" + playerId).setValue(true);
     }
 
-    public void checkGameCode(String playerName, String code) {
+    public void checkGameStatus(String playerName, String code) {
         database.getGames().orderByChild("code").equalTo(code).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot result) {
                 if (result.getValue() != null && result.getChildrenCount() == 1) {
                     for (DataSnapshot snapshot : result.getChildren()) {
                         if (snapshot.hasChild("ended") && (Boolean) snapshot.child("ended").getValue()) {
+                            // Game has ended
                             HashMap<String, String> status = new HashMap<>();
                             status.put("status", "game_ended");
                             joinStatus.setValue(status);
@@ -50,16 +51,20 @@ public class JoinGameViewModel extends ViewModel {
                                 && snapshot.hasChild("joinAfterStart")
                                 && (Boolean) snapshot.child("started").getValue()
                                 && !((Boolean) snapshot.child("joinAfterStart").getValue())) {
+                            // Game is already started and cannot be joined
                             HashMap<String, String> status = new HashMap<>();
                             status.put("status", "game_started");
                             joinStatus.setValue(status);
                         } else if (snapshot.hasChild("started") && (Boolean) snapshot.child("started").getValue()) {
+                            // Game is already started but can be joined
                             joinGame(playerName, snapshot, "join_game");
                         } else {
+                            // Game hasn't started yet
                             joinGame(playerName, snapshot, "join_lobby");
                         }
                     }
                 } else {
+                    // Game not found
                     HashMap<String, String> status = new HashMap<>();
                     status.put("status", "not_found");
                     joinStatus.setValue(status);

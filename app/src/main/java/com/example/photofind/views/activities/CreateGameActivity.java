@@ -18,13 +18,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.photofind.R;
-import com.example.photofind.adapters.OrganizerImageAdapter;
-import com.example.photofind.models.TempCheckpoint;
+import com.example.photofind.adapters.CreateGameImageAdapter;
+import com.example.photofind.models.Checkpoint;
 import com.example.photofind.viewmodels.CreateGameViewModel;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -42,12 +41,12 @@ public class CreateGameActivity extends AppCompatActivity {
     private RelativeLayout rlCreatingGame;
     private RecyclerView rvImages;
 
-    private ArrayList<TempCheckpoint> checkpointList;
+    private ArrayList<Checkpoint> checkpointList;
     private SwitchMaterial optionStarted;
 
     private SharedPreferences sharedPref;
     private CreateGameViewModel model;
-    private OrganizerImageAdapter imageAdapter;
+    private CreateGameImageAdapter imageAdapter;
     private MaterialAlertDialogBuilder dialogError;
     private MaterialAlertDialogBuilder dialogConfirm;
 
@@ -67,7 +66,7 @@ public class CreateGameActivity extends AppCompatActivity {
 
         checkpointList = new ArrayList<>();
 
-        imageAdapter = new OrganizerImageAdapter(checkpointList);
+        imageAdapter = new CreateGameImageAdapter(checkpointList);
 
         rvImages = findViewById(R.id.rvImages);
         rvImages.setHasFixedSize(true);
@@ -169,7 +168,7 @@ public class CreateGameActivity extends AppCompatActivity {
                         LatLng latLng = result.getData().getParcelableExtra("latLng");
                         String title = result.getData().getStringExtra("title");
 
-                        TempCheckpoint checkpoint = new TempCheckpoint(imageUri, latLng, title);
+                        Checkpoint checkpoint = new Checkpoint(title, latLng.latitude, latLng.longitude, imageUri);
 
                         checkpointList.add(checkpoint);
                         txtCheckpointText.setText("Checkpoints added: " + checkpointList.size());

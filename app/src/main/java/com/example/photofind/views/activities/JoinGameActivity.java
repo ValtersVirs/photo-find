@@ -45,7 +45,7 @@ public class JoinGameActivity extends AppCompatActivity {
             playerName = edtPlayerName.getText().toString().trim();
 
             if (validateName(playerName) && validateCode(gameCode)) {
-                model.checkGameCode(playerName, gameCode.toUpperCase());
+                model.checkGameStatus(playerName, gameCode.toUpperCase());
             }
         });
 

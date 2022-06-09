@@ -10,16 +10,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.photofind.R;
-import com.example.photofind.models.TempCheckpoint;
+import com.example.photofind.models.Checkpoint;
 
 import java.util.ArrayList;
 
-public class OrganizerImageAdapter extends RecyclerView.Adapter<OrganizerImageAdapter.ViewHolder> {
+public class CreateGameImageAdapter extends RecyclerView.Adapter<CreateGameImageAdapter.ViewHolder> {
     private static ClickListener clickListener;
 
-    ArrayList<TempCheckpoint> checkpointList;
+    ArrayList<Checkpoint> checkpointList;
 
-    public OrganizerImageAdapter(ArrayList<TempCheckpoint> checkpointList) {
+    public CreateGameImageAdapter(ArrayList<Checkpoint> checkpointList) {
         this.checkpointList = checkpointList;
     }
 
@@ -32,7 +32,7 @@ public class OrganizerImageAdapter extends RecyclerView.Adapter<OrganizerImageAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        TempCheckpoint checkpoint = checkpointList.get(position);
+        Checkpoint checkpoint = checkpointList.get(position);
         holder.checkpoint = checkpoint;
 
         Glide.with(holder.itemView)
@@ -51,7 +51,7 @@ public class OrganizerImageAdapter extends RecyclerView.Adapter<OrganizerImageAd
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
-        TempCheckpoint checkpoint;
+        Checkpoint checkpoint;
         ImageView checkpointImage;
 
         public ViewHolder(@NonNull View itemView) {
@@ -69,7 +69,7 @@ public class OrganizerImageAdapter extends RecyclerView.Adapter<OrganizerImageAd
     }
 
     public void setOnItemClickListener(ClickListener clickListener) {
-        OrganizerImageAdapter.clickListener = clickListener;
+        CreateGameImageAdapter.clickListener = clickListener;
     }
 
     public interface ClickListener {

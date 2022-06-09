@@ -30,16 +30,16 @@ public class PlayerGameActivity extends AppCompatActivity {
     private String playerId;
     private String gameId;
 
-    private  Button btnAddCheckpoint;
-    private  Button btnViewCheckpoints;
-    private   Button btnLeave;
-    private   Button btnBack;
+    private Button btnAddCheckpoint;
+    private Button btnViewCheckpoints;
+    private Button btnLeave;
+    private Button btnBack;
 
-    private    PlayerGameViewModel model;
-    private    SharedPreferences sharedPref;
-    private    FragmentManager manager;
-    private    FragmentTransaction transaction;
-    private    MaterialAlertDialogBuilder dialogConfirm;
+    private PlayerGameViewModel model;
+    private SharedPreferences sharedPref;
+    private FragmentManager manager;
+    private FragmentTransaction transaction;
+    private MaterialAlertDialogBuilder dialogConfirm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +68,8 @@ public class PlayerGameActivity extends AppCompatActivity {
         });
     }
 
-    ActivityResultLauncher<Intent> getCheckpoint = registerForActivityResult(
+    // Launcher for checkpoint creation activity
+    ActivityResultLauncher<Intent> addCheckpointLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -84,7 +85,7 @@ public class PlayerGameActivity extends AppCompatActivity {
 
     public void createCheckpoint() {
         Intent intent = new Intent(this, CreateCheckpointActivity.class);
-        getCheckpoint.launch(intent);
+        addCheckpointLauncher.launch(intent);
     }
 
     public void viewCheckpoints() {

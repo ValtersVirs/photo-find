@@ -163,6 +163,7 @@ public class CreateCheckpointActivity extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         File file = new File(currentPhotoPath);
+                        // Compress the image
                         File compressFile = compressImage(file);
                         Uri imageUri = Uri.fromFile(compressFile);
 
@@ -209,6 +210,7 @@ public class CreateCheckpointActivity extends AppCompatActivity {
 
                         File file = new File(filePath);
 
+                        // Save the image in a new file
                         File imageFile = null;
                         try {
                             imageFile = createImageFile();
@@ -224,6 +226,7 @@ public class CreateCheckpointActivity extends AppCompatActivity {
                         
                         Uri imageUri = null;
                         if (imageFile != null) {
+                            // Compress the image
                             File compressFile = compressImage(imageFile);
                             imageUri = Uri.fromFile(compressFile);
                         }
@@ -270,7 +273,7 @@ public class CreateCheckpointActivity extends AppCompatActivity {
             BitmapFactory.decodeStream(inputStream, null, o);
             inputStream.close();
 
-            // The new size we want to scale to
+            // The new size to scale to
             final int REQUIRED_SIZE=75;
 
             // Find the correct scale value. It should be the power of 2.

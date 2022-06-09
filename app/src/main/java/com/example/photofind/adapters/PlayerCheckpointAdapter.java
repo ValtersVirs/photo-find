@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -20,8 +19,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.photofind.R;
 import com.example.photofind.models.Checkpoint;
-import com.example.photofind.models.Player;
-import com.example.photofind.models.PlayerCheckpoint;
 
 import java.util.ArrayList;
 

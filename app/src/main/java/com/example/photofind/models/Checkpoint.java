@@ -1,5 +1,9 @@
 package com.example.photofind.models;
 
+import android.net.Uri;
+
+import com.google.android.gms.maps.model.LatLng;
+
 public class Checkpoint {
     String id;
     String imagePath;
@@ -7,8 +11,15 @@ public class Checkpoint {
     Double latitude;
     Double longitude;
     Long uploadedAt;
+    Uri image;
 
-    public Checkpoint() {
+    public Checkpoint() {}
+
+    public Checkpoint(String title, Double latitude, Double longitude, Uri image) {
+        this.title = title;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.image = image;
     }
 
     public Checkpoint(String id, Double latitude, Double longitude) {
@@ -80,5 +91,14 @@ public class Checkpoint {
 
     public void setUploadedAt(Long uploadedAt) {
         this.uploadedAt = uploadedAt;
+    }
+
+    public Uri getImage() { return image; }
+
+    public void setImage(Uri image) { this.image = image; }
+
+    public LatLng createLatLng() {
+        LatLng latLng = new LatLng(this.latitude, this.longitude);
+        return latLng;
     }
 }

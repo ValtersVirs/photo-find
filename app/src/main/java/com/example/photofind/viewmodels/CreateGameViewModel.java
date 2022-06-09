@@ -10,8 +10,6 @@ import androidx.lifecycle.ViewModel;
 import com.example.photofind.models.Checkpoint;
 import com.example.photofind.models.Database;
 import com.example.photofind.models.Game;
-import com.example.photofind.models.TempCheckpoint;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -30,7 +28,7 @@ public class CreateGameViewModel extends ViewModel {
     private String tempGameId;
     private String gameCode;
     private String gameName;
-    private ArrayList<TempCheckpoint> tempCheckpoints;
+    private ArrayList<Checkpoint> checkpoints;
     private Boolean joinAfterStart;
     private Integer checkpointCount;
     private Integer checkpointsCompleted;
@@ -43,10 +41,10 @@ public class CreateGameViewModel extends ViewModel {
         return gameId;
     }
 
-    public void createGame(String gameName, ArrayList<TempCheckpoint> tempCheckpoints, Boolean joinAfterStart) {
+    public void createGame(String gameName, ArrayList<Checkpoint> checkpoints, Boolean joinAfterStart) {
         if (gameCode == null) {
             this.gameName = gameName;
-            this.tempCheckpoints = tempCheckpoints;
+            this.checkpoints = checkpoints;
             this.joinAfterStart = joinAfterStart;
 
             generateGameCode();
@@ -56,10 +54,10 @@ public class CreateGameViewModel extends ViewModel {
             Game newGame = new Game(tempGameId, gameName, gameCode, false, false, joinAfterStart);
 
             database.getGames().child(tempGameId).setValue(newGame).addOnSuccessListener(result -> {
-                checkpointCount = tempCheckpoints.size();
+                checkpointCount = checkpoints.size();
                 checkpointsCompleted = 0;
                 imagesCompleted = 0;
-                createCheckpoints(tempCheckpoints);
+                createCheckpoints(checkpoints);
             });
         }
     }
@@ -72,7 +70,7 @@ public class CreateGameViewModel extends ViewModel {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue() == null) {
                     gameCode = tempCode;
-                    createGame(gameName, tempCheckpoints, joinAfterStart);
+                    createGame(gameName, checkpoints, joinAfterStart);
                 } else {
                     generateGameCode();
                 }
@@ -95,19 +93,37 @@ public class CreateGameViewModel extends ViewModel {
         return builder.toString();
     }
 
-    public void createCheckpoints(ArrayList<TempCheckpoint> tempCheckpoints) {
-        for (TempCheckpoint tempCheckpoint : tempCheckpoints) {
-            Uri imageUri = tempCheckpoint.getImage();
-            LatLng latLng = tempCheckpoint.getLatLng();
-            String title = tempCheckpoint.getTitle();
-
+    // Creates full checkpoint
+    public void createCheckpoints(ArrayList<Checkpoint> checkpoints) {
+        for (Checkpoint checkpoint : checkpoints) {
             String checkpointId = database.getCheckpoints().push().getKey();
+            Uri imageUri = checkpoint.getImage();
             Date date = new Date();
-            Checkpoint checkpoint = new Checkpoint(checkpointId, "", title, latLng.latitude, latLng.longitude, date.getTime());
+
+            checkpoint.setId(checkpointId);
+            checkpoint.setImagePath("");
+            checkpoint.setUploadedAt(date.getTime());
 
             uploadCheckpoint(checkpoint);
             uploadImage(checkpointId, imageUri);
         }
+    }
+
+    public void uploadCheckpoint(Checkpoint checkpoint) {
+        String checkpointId = checkpoint.getId();
+
+        checkpoint.setImage(null);
+
+        database.getCheckpoints().child(checkpointId).setValue(checkpoint).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                database.getGames().child(tempGameId + "/checkpoints/" + checkpointId).setValue(true).addOnCompleteListener(o -> {
+                    checkpointsCompleted++;
+                    gameUploadCompleted();
+                });
+            } else {
+                checkpointsCompleted++;
+            }
+        });
     }
 
     public void uploadImage(String checkpointId, Uri imageUri) {
@@ -127,21 +143,6 @@ public class CreateGameViewModel extends ViewModel {
                 });
             } else {
                 imagesCompleted++;
-            }
-        });
-    }
-
-    public void uploadCheckpoint(Checkpoint checkpoint) {
-        String checkpointId = checkpoint.getId();
-
-        database.getCheckpoints().child(checkpointId).setValue(checkpoint).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                database.getGames().child(tempGameId + "/checkpoints/" + checkpointId).setValue(true).addOnCompleteListener(o -> {
-                    checkpointsCompleted++;
-                    gameUploadCompleted();
-                });
-            } else {
-                checkpointsCompleted++;
             }
         });
     }
